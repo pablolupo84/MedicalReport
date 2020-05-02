@@ -10,7 +10,7 @@ dic_conexion_db = {
 
 class Conexion:
     
-    def conectar(self):
+    def Conectar(self):
         try:
             conexion = mysql.connector.connect(user=dic_conexion_db.get('user'),
                                                 password=dic_conexion_db.get('password'),
@@ -31,5 +31,4 @@ class Conexion:
         print("Cerrando conexion con {}".format(dic_conexion_db.get('database')))
         conexion.close()
         print("Conexion cerrada con {}".format(dic_conexion_db.get('database')))
-        
 
