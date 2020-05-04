@@ -75,3 +75,4 @@ class Pacientes(Conexion):
 # test.Modificar(data,14)
 # test.Eliminar(14) 
 # print(test.BuscarporDni(str(31258798)))
+
