@@ -20,14 +20,14 @@ class Antecedentes(Conexion):
             if (cnx):
                 self.CerrarConexion(cnx)
 
-    #FALTA CREAR UN MODIFICAR POR ANTECEDENTES
-    def Modificar(self,id_paciente,data):
-            lista=[data,]
+    def Modificar(self,id_paciente,data,data_new):
+            lista=[data_new,]
             try:    
                 cnx=self.Conectar()
                 cursor = cnx.cursor()
-                sql_qry="""UPDATE clinica.antecedentes SET Enfermedades=%s WHERE id_paciente = %s"""
+                sql_qry="""UPDATE clinica.antecedentes SET Enfermedades=%s WHERE id_paciente = %s and Enfermedades=%s"""
                 lista.append(id_paciente)
+                lista.append(data)
                 cursor.execute(sql_qry,lista)
                 cnx.commit()
                 print("Record Update successfully into clinica.antecedentes table")
@@ -67,40 +67,6 @@ class Antecedentes(Conexion):
         finally:
             if (cnx):
                 self.CerrarConexion(cnx)
-
-    def BuscarId_Dni(self,dni):
-        personasPorDni=None
-        try:    
-            cnx=self.Conectar()
-            cursor = cnx.cursor()
-            sql_qry="""SELECT id FROM clinica.paciente WHERE dni = %s"""
-            cursor.execute(sql_qry,(dni,))
-            personasPorDni = cursor.fetchall()
-            print("Record Select successfully into clinica.paciente table")
-        except Exception as err:
-            print("Error: {}".format(err))
-            print("Failed to Select data into clinica.paciente table")
-        finally:
-            if (cnx):
-                self.CerrarConexion(cnx)
-                return personasPorDni
-
-    def BuscarporID(self,id_paciente):
-        personasPorDni=[]
-        try:    
-            cnx=self.Conectar()
-            cursor = cnx.cursor()
-            sql_qry="""SELECT * FROM clinica.antecedentes WHERE id_paciente = %s"""
-            cursor.execute(sql_qry,(id_paciente,))
-            personasPorDni = cursor.fetchall()
-            print("Record Select successfully into clinica.antecedentes table")
-        except Exception as err:
-            print("Error: {}".format(err))
-            print("Failed to Select data into clinica.antecedentes table")
-        finally:
-            if (cnx):
-                self.CerrarConexion(cnx)
-                return personasPorDni
 
 
 # test=Antecedentes()

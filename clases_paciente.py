@@ -52,13 +52,15 @@ class Pacientes(Conexion):
                 self.CerrarConexion(cnx)
 
     def BuscarporDni(self,dni):
-        personasPorDni=[]
+        """La funcion retorna una tupla con los datos de 
+        pacientes segun dni, sino retorna una tupla vacia"""
+        personasPorDni=()
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
             sql_qry="""SELECT * FROM clinica.paciente WHERE dni = %s"""
             cursor.execute(sql_qry,(dni,))
-            personasPorDni = cursor.fetchall()
+            personasPorDni = cursor.fetchone()
             print("Record Select successfully into clinica.paciente table")
         except Exception as err:
             print("Error: {}".format(err))
@@ -75,4 +77,8 @@ class Pacientes(Conexion):
 # test.Modificar(data,14)
 # test.Eliminar(14) 
 # print(test.BuscarporDni(str(31258798)))
-
+# print(test.IdPacientePorDni(str(31258798)))
+# datos=test.IdPacientePorDni(str(31258798))
+# lista=datos[0]
+# id=lista[0]
+# print(id)datos=test.IdPacientePorDni(str(31258798)))

@@ -21,15 +21,14 @@ class Sesiones(Conexion):
             if (cnx):
                 self.CerrarConexion(cnx)
 
-
-    #FALTA CREAR UN MODIFICAR POR SESION
-    def Modificar(self,id_paciente,data):
-            lista=[data,]
+    def Modificar(self,id_paciente,data,data_new):
+            lista=[data_new,]
             try:    
                 cnx=self.Conectar()
                 cursor = cnx.cursor()
-                sql_qry="""UPDATE clinica.sesiones SET fecha=%s WHERE id_p = %s"""
+                sql_qry="""UPDATE clinica.sesiones SET fecha=%s WHERE id_p = %s AND fecha=%s"""
                 lista.append(id_paciente)
+                lista.append(data)
                 cursor.execute(sql_qry,lista)
                 cnx.commit()
                 print("Record Update successfully into clinica.sesiones table")
@@ -70,46 +69,16 @@ class Sesiones(Conexion):
             if (cnx):
                 self.CerrarConexion(cnx)
 
-    def BuscarSesion_Dni(self,dni):
-        personasPorDni=None
-        try:    
-            cnx=self.Conectar()
-            cursor = cnx.cursor()
-            sql_qry="""SELECT id FROM clinica.paciente WHERE dni = %s"""
-            cursor.execute(sql_qry,(dni,))
-            personasPorDni = cursor.fetchall()
-            print("Record Select successfully into clinica.paciente table")
-        except Exception as err:
-            print("Error: {}".format(err))
-            print("Failed to Select data into clinica.paciente table")
-        finally:
-            if (cnx):
-                self.CerrarConexion(cnx)
-                return personasPorDni
-
-    def BuscarporID(self,id_paciente):
-        personasPorDni=[]
-        try:    
-            cnx=self.Conectar()
-            cursor = cnx.cursor()
-            sql_qry="""SELECT * FROM clinica.sesiones WHERE id_p = %s"""
-            cursor.execute(sql_qry,(id_paciente,))
-            personasPorDni = cursor.fetchall()
-            print("Record Select successfully into clinica.sesiones table")
-        except Exception as err:
-            print("Error: {}".format(err))
-            print("Failed to Select data into clinica.sesiones table")
-        finally:
-            if (cnx):
-                self.CerrarConexion(cnx)
-                return personasPorDni
-
-
 
 # test=Sesiones()
 # print(date.today())
-# test.Insertar(3,date.today())
-# test.Modificar(2,date.today())
+# test.Insertar(3,date(2020, 6, 24))
+# test.Insertar(4,date(2019, 7, 4))
+# test.Insertar(5,date(2018, 1, 28))
+# test.Insertar(5,date(2018, 2, 28))
+# test.Insertar(5,date(2018, 3, 28))
+# test.Modificar(1,date(2020, 4, 27),date(1984, 11, 17))
+
 # print(test.BuscarporID(3))
 # print(test.BuscarId_Dni("87654321T"))
 # test.EliminarTodas(3)
