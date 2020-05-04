@@ -1,74 +1,76 @@
 from conexion import *
-
-#Antecedentes
-class Antecedentes(Conexion):
+import time
+from datetime import date
+#Sesiones
+class Sesiones(Conexion):
 
     def Insertar(self,id_paciente,data):
         lista=[id_paciente,]
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
-            sql_qry="""INSERT INTO clinica.antecedentes (id_paciente,Enfermedades) VALUES (%s,%s)"""
+            sql_qry="""INSERT INTO clinica.sesiones (id_p,fecha) VALUES (%s,%s)"""
             lista.append(data)
             cursor.execute(sql_qry,lista)
             cnx.commit()
-            print("Record inserted successfully into clinica.antecedentes table")
+            print("Record inserted successfully into clinica.sesiones table")
         except Exception as err:
             print("Error: {}".format(err))
-            print("Failed to insert data into clinica.antecedentes table")
+            print("Failed to insert data into clinica.sesiones table")
         finally:
             if (cnx):
                 self.CerrarConexion(cnx)
 
-    #FALTA CREAR UN MODIFICAR POR ANTECEDENTES
+
+    #FALTA CREAR UN MODIFICAR POR SESION
     def Modificar(self,id_paciente,data):
             lista=[data,]
             try:    
                 cnx=self.Conectar()
                 cursor = cnx.cursor()
-                sql_qry="""UPDATE clinica.antecedentes SET Enfermedades=%s WHERE id_paciente = %s"""
+                sql_qry="""UPDATE clinica.sesiones SET fecha=%s WHERE id_p = %s"""
                 lista.append(id_paciente)
                 cursor.execute(sql_qry,lista)
                 cnx.commit()
-                print("Record Update successfully into clinica.antecedentes table")
+                print("Record Update successfully into clinica.sesiones table")
             except Exception as err:
                 print("Error: {}".format(err))
-                print("Failed to Update data into clinica.antecedentes table")
+                print("Failed to Update data into clinica.sesiones table")
             finally:
                 if (cnx):
                     self.CerrarConexion(cnx)
 
-    def EliminarTodos(self,id_paciente):
+    def EliminarTodas(self,id_paciente):
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
-            sql_qry="""DELETE FROM clinica.antecedentes WHERE id_paciente = %s"""
+            sql_qry="""DELETE FROM clinica.sesiones WHERE id_p = %s"""
             cursor.execute(sql_qry,(id_paciente,))
             cnx.commit()
-            print("Record Deleted successfully into clinica.antecedentes table")
+            print("Record Deleted successfully into clinica.sesiones table")
         except Exception as err:
             print("Error: {}".format(err))
-            print("Failed to Deleted data into clinica.antecedentes table")
+            print("Failed to Deleted data into clinica.sesiones table")
         finally:
             if (cnx):
                 self.CerrarConexion(cnx)
 
-    def EliminarAntecedente(self,id_paciente,data):
+    def EliminarSesion(self,id_paciente,data):
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
-            sql_qry="""DELETE FROM clinica.antecedentes WHERE id_paciente = %s AND Enfermedades=%s"""
+            sql_qry="""DELETE FROM clinica.sesiones WHERE id_p = %s AND fecha=%s"""
             cursor.execute(sql_qry,(id_paciente,data,))
             cnx.commit()
-            print("Record Deleted successfully into clinica.antecedentes table")
+            print("Record Deleted successfully into clinica.sesiones table")
         except Exception as err:
             print("Error: {}".format(err))
-            print("Failed to Deleted data into clinica.antecedentes table")
+            print("Failed to Deleted data into clinica.sesiones table")
         finally:
             if (cnx):
                 self.CerrarConexion(cnx)
 
-    def BuscarId_Dni(self,dni):
+    def BuscarSesion_Dni(self,dni):
         personasPorDni=None
         try:    
             cnx=self.Conectar()
@@ -90,23 +92,25 @@ class Antecedentes(Conexion):
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
-            sql_qry="""SELECT * FROM clinica.antecedentes WHERE id_paciente = %s"""
+            sql_qry="""SELECT * FROM clinica.sesiones WHERE id_p = %s"""
             cursor.execute(sql_qry,(id_paciente,))
             personasPorDni = cursor.fetchall()
-            print("Record Select successfully into clinica.antecedentes table")
+            print("Record Select successfully into clinica.sesiones table")
         except Exception as err:
             print("Error: {}".format(err))
-            print("Failed to Select data into clinica.antecedentes table")
+            print("Failed to Select data into clinica.sesiones table")
         finally:
             if (cnx):
                 self.CerrarConexion(cnx)
                 return personasPorDni
 
 
-# test=Antecedentes()
-# test.Insertar(4,"carga esquiotibilaes")
-# test.Modificar(4,"Cardiopatologia")
-# print(test.BuscarporID(4))
+
+# test=Sesiones()
+# print(date.today())
+# test.Insertar(3,date.today())
+# test.Modificar(2,date.today())
+# print(test.BuscarporID(3))
 # print(test.BuscarId_Dni("87654321T"))
-# test.EliminarTodos(4,)
-# test.EliminarAntecedente(10,"ACV")
+# test.EliminarTodas(3)
+# test.EliminarSesion(3,date.today())
