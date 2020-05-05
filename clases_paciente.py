@@ -1,5 +1,6 @@
 from conexion import *
 
+
 #Pacientes
 class Pacientes(Conexion):
 
@@ -20,21 +21,21 @@ class Pacientes(Conexion):
                 self.CerrarConexion(cnx)
 
     def Modificar(self,data,id_paciente):
-            try:    
-                cnx=self.Conectar()
-                cursor = cnx.cursor()
-                sql_qry="""UPDATE clinica.paciente SET nombre=%s,apellidos=%s,dni=%s,telefono=%s,
-                        direccion=%s,edad=%s WHERE id = %s"""
-                data.append(id_paciente)
-                cursor.execute(sql_qry,data)
-                cnx.commit()
-                print("Record Update successfully into clinica.paciente table")
-            except Exception as err:
-                print("Error: {}".format(err))
-                print("Failed to Update data into clinica.paciente table")
-            finally:
-                if (cnx):
-                    self.CerrarConexion(cnx)
+        try:    
+            cnx=self.Conectar()
+            cursor = cnx.cursor()
+            sql_qry="""UPDATE clinica.paciente SET nombre=%s,apellidos=%s,dni=%s,telefono=%s,
+                    direccion=%s,edad=%s WHERE id = %s"""
+            data.append(id_paciente)
+            cursor.execute(sql_qry,data)
+            cnx.commit()
+            print("Record Update successfully into clinica.paciente table")
+        except Exception as err:
+            print("Error: {}".format(err))
+            print("Failed to Update data into clinica.paciente table")
+        finally:
+            if (cnx):
+                self.CerrarConexion(cnx)
 
     def Eliminar(self,id_paciente):
         try:    
@@ -70,9 +71,48 @@ class Pacientes(Conexion):
                 self.CerrarConexion(cnx)
                 return personasPorDni
 
+    def BuscarporID(self,id_paciente):
+        """La funcion retorna una tupla con los datos de 
+        pacientes segun ID, sino retorna una tupla vacia"""
+        personasPorID=()
+        try:    
+            cnx=self.Conectar()
+            cursor = cnx.cursor()
+            sql_qry="""SELECT * FROM clinica.paciente WHERE id = %s"""
+            cursor.execute(sql_qry,(id_paciente,))
+            personasPorID = cursor.fetchone()
+            print("Record Select successfully into clinica.paciente table")
+        except Exception as err:
+            print("Error: {}".format(err))
+            print("Failed to Select data into clinica.paciente table")
+        finally:
+            if (cnx):
+                self.CerrarConexion(cnx)
+                return personasPorID
+    
+    def BuscarTodos(self):
+        lista=[]
+        try:    
+            cnx=self.Conectar()
+            cursor = cnx.cursor()
+            sql_qry="""SELECT * FROM clinica.paciente"""
+            cursor.execute(sql_qry)
+            lista = cursor.fetchall()
+            print("Record Select successfully into clinica.paciente table")
+        except Exception as err:
+            print("Error: {}".format(err))
+            print("Failed to Select data into clinica.paciente table")
+        finally:
+            if (cnx):
+                self.CerrarConexion(cnx)
+                return lista
+
+
+
+
 
 # test=Pacientes()
-# data=['Pablo', 'lONDRES', '31258793', 11319988, '1 DE MAYO 5343', 35]
+# data=['sd', '', '31258793', 2, '1 DE MAYO 5343', 35]
 # test.Insertar(data)
 # test.Modificar(data,14)
 # test.Eliminar(14) 
