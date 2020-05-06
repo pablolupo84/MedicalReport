@@ -69,6 +69,64 @@ class Sesiones(Conexion):
             if (cnx):
                 self.CerrarConexion(cnx)
 
+    def BuscarTodos(self):
+        print("------------BuscarTodos-----------")
+        lista=[]
+        try:    
+            cnx=self.Conectar()
+            cursor = cnx.cursor()
+            sql_qry="""SELECT * FROM clinica.sesiones"""
+            cursor.execute(sql_qry)
+            lista = cursor.fetchall()
+            print("Record Select successfully into clinica.sesiones table")
+        except Exception as err:
+            print("Error: {}".format(err))
+            print("Failed to Select data into clinica.sesiones table")
+        finally:
+            if (cnx):
+                self.CerrarConexion(cnx)
+                return lista
+
+    def BuscarporID(self,id_paciente):
+        """La funcion retorna una tupla con los datos de 
+        pacientes segun dni, sino retorna una tupla vacia"""
+        print("------------BuscarporDni-----------")
+        personasPorDni=()
+        try:    
+            cnx=self.Conectar()
+            cursor = cnx.cursor()
+            sql_qry="""SELECT * FROM clinica.sesiones WHERE id_p = %s"""
+            cursor.execute(sql_qry,(id_paciente,))
+            personasPorDni = cursor.fetchall()
+            print("Record Select successfully into clinica.sesiones table")
+        except Exception as err:
+            print("Error: {}".format(err))
+            print("Failed to Select data into clinica.sesiones table")
+        finally:
+            if (cnx):
+                self.CerrarConexion(cnx)
+                return personasPorDni
+                
+    def BuscarporDni(self,dni):
+        """La funcion retorna una tupla con los datos de 
+        pacientes segun dni, sino retorna una tupla vacia"""
+        print("------------BuscarporDni-----------")
+        personasPorDni=()
+        try:    
+            cnx=self.Conectar()
+            cursor = cnx.cursor()
+            sql_qry="""SELECT * FROM clinica.paciente WHERE dni = %s"""
+            cursor.execute(sql_qry,(dni,))
+            personasPorDni = cursor.fetchone()
+            print("Record Select successfully into clinica.paciente table")
+        except Exception as err:
+            print("Error: {}".format(err))
+            print("Failed to Select data into clinica.paciente table")
+        finally:
+            if (cnx):
+                self.CerrarConexion(cnx)
+                return personasPorDni
+
 
 # test=Sesiones()
 # print(date.today())
