@@ -9,12 +9,16 @@ from tkinter.scrolledtext import ScrolledText
 from conexion import *
 from clases_paciente import *
 
+
 #PACIENTE FRAME
 class PacienteFrame(ttk.Frame,Pacientes):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-    
+        self.id_seleccion=None
+        #-----------------Separador-----------------------
+        self.separator = Frame(self,height=3, bd=1, relief=SUNKEN)
+        self.separator.pack()
         #-----------------COMIENZO DE CAMPOS-----------------------
         self.miFrame_Campos = Frame(self,bg="#0e0349")
         self.miFrame_Campos.pack()
@@ -26,55 +30,79 @@ class PacienteFrame(ttk.Frame,Pacientes):
         self.datacuadroDireccion = StringVar()
         self.datacuadroEdad = IntVar()
 
-        self.cuadroNombre = Entry(self.miFrame_Campos, textvariable=self.datacuadroNombre)
+        self.cuadroNombre = Entry(self.miFrame_Campos, textvariable=self.datacuadroNombre,width=25)
         self.cuadroNombre.grid(row=1, column=1, padx=10, pady=1)
         self.cuadroNombre.config(justify="center")
 
-        self.cuadroApellidos = Entry(self.miFrame_Campos, textvariable=self.datacuadroApellidos)
+        self.cuadroApellidos = Entry(self.miFrame_Campos, textvariable=self.datacuadroApellidos,width=25)
         self.cuadroApellidos.grid(row=2, column=1, padx=10, pady=1)
         self.cuadroApellidos.config(justify="center")
 
-        self.cuadroDni = Entry(self.miFrame_Campos, textvariable=self.datacuadroDni)
+        self.cuadroDni = Entry(self.miFrame_Campos, textvariable=self.datacuadroDni,width=25)
         self.cuadroDni.grid(row=1, column=3, padx=10, pady=1)
         self.cuadroDni.config(justify="center")
 
-        self.cuadroTelefono = Entry(self.miFrame_Campos, textvariable=self.datacuadroTelefono)
+        self.cuadroTelefono = Entry(self.miFrame_Campos, textvariable=self.datacuadroTelefono,width=25)
         self.cuadroTelefono.grid(row=2, column=3, padx=10, pady=1)
         self.cuadroTelefono.config(justify="center")
 
-        self.cuadroDireccion = Entry(self.miFrame_Campos, textvariable=self.datacuadroDireccion)
+        self.cuadroDireccion = Entry(self.miFrame_Campos, textvariable=self.datacuadroDireccion,width=25)
         self.cuadroDireccion.grid(row=1, column=5, padx=10, pady=1)
         self.cuadroDireccion.config(justify="center")
         
-        self.cuadroEdad = Entry(self.miFrame_Campos, textvariable=self.datacuadroEdad)
+        self.cuadroEdad = Entry(self.miFrame_Campos, textvariable=self.datacuadroEdad,width=25)
         self.cuadroEdad.grid(row=2, column=5, padx=10, pady=1)
         self.cuadroEdad.config(justify="center")
-
-        self.botonAgregar = Button(self.miFrame_Campos, text="Agregar", width=10,command=lambda:self.InsertarData())
-        self.botonAgregar.grid(row=1, column=6, padx=10, pady=10)
-       
-        self.botonLimpiar = Button(self.miFrame_Campos, text="Limpiar", width=10,command=lambda:self.borrarInputBox())
-        self.botonLimpiar.grid(row=2, column=6, padx=10, pady=10)
+    
+        self.botonLimpiar = Button(self.miFrame_Campos, text="Limpiar", width=12,command=lambda:self.borrarInputBox())
+        self.botonLimpiar.grid(row=5, column=5, padx=10, pady=10)
 
         #-----------------COMIENZO DE ETIQUETAS-----------------------
 
-        self.NombreLabel = Label(self.miFrame_Campos, text="Nombre: ",bg="#FFEEDD")
+        self.NombreLabel = Label(self.miFrame_Campos, text="Nombre: ",bg="#FFEEDD",width=12)
         self.NombreLabel.grid(row=1, column=0, padx=10, pady=10)
 
-        self.ApellidosLabel = Label(self.miFrame_Campos, text="Apellidos: ",bg="#FFEEDD")
+        self.ApellidosLabel = Label(self.miFrame_Campos, text="Apellidos: ",bg="#FFEEDD",width=12)
         self.ApellidosLabel.grid(row=2, column=0, padx=10, pady=10)
 
-        self.DNILabel = Label(self.miFrame_Campos, text="DNI: ",bg="#FFEEDD")
+        self.DNILabel = Label(self.miFrame_Campos, text="DNI: ",bg="#FFEEDD",width=12)
         self.DNILabel.grid(row=1, column=2, padx=10, pady=10)
 
-        self.TelefonoLabel = Label(self.miFrame_Campos, text="Telefono: ",bg="#FFEEDD")
+        self.TelefonoLabel = Label(self.miFrame_Campos, text="Telefono: ",bg="#FFEEDD",width=12)
         self.TelefonoLabel.grid(row=2, column=2, padx=10, pady=10)
 
-        self.DireccionLabel = Label(self.miFrame_Campos, text="Direccion: ",bg="#FFEEDD")
+        self.DireccionLabel = Label(self.miFrame_Campos, text="Direccion: ",bg="#FFEEDD",width=12)
         self.DireccionLabel.grid(row=1, column=4, padx=10, pady=10)
 
-        self.EdadLabel = Label(self.miFrame_Campos, text="Edad: ",bg="#FFEEDD")
+        self.EdadLabel = Label(self.miFrame_Campos, text="Edad: ",bg="#FFEEDD",width=12)
         self.EdadLabel.grid(row=2, column=4, padx=10, pady=10)
+
+        #-----------------Separador-----------------------
+        self.separator = Frame(self,height=5, bd=1, relief=SUNKEN)
+        self.separator.pack()
+
+        #-----------------COMIENZO DE BOTONES-----------------------
+        
+        self.miFrame_Botones = Frame(self,bg="#0e0349")
+        self.miFrame_Botones.pack()
+
+        self.botonAgregar = Button(self.miFrame_Campos, text="Agregar", width=12,command=lambda:self.InsertarData())
+        self.botonAgregar.grid(row=4, column=0, padx=10, pady=10)
+
+        self.botonEdit = Button(self.miFrame_Campos, text="Editar", width=12,
+            command=lambda:self.ModificarDataUser(self.leerInfoInputBox(),self.id_seleccion))
+        self.botonEdit.grid(row=4, column=1, padx=10, pady=10)
+
+        self.botonDelete = Button(self.miFrame_Campos, text="Borrar", width=12,command=lambda:self.EliminarData(self.id_seleccion))
+        self.botonDelete.grid(row=4, column=2, padx=10, pady=10)
+
+        self.botonBuscar = Button(self.miFrame_Campos, text="Buscar", width=12,command=lambda:self.CompletarData_DNI())
+        self.botonBuscar.grid(row=5, column=0, padx=10, pady=10)
+
+        self.datacuadroDni_B = StringVar()
+        self.cuadroDni_B = Entry(self.miFrame_Campos, textvariable=self.datacuadroDni_B,width=30)
+        self.cuadroDni_B.grid(row=5, column=1, padx=10, pady=10,columnspan=2)
+        self.cuadroDni_B.config(justify="center")
 
         #-----------------Separador-----------------------
         self.separator = Frame(self,height=10, bd=1, relief=SUNKEN)
@@ -116,46 +144,52 @@ class PacienteFrame(ttk.Frame,Pacientes):
         self.scrollVert2.grid(row=1,column=2,sticky="nsnew")
         self.treePacientes.config(yscrollcommand=self.scrollVert2.set)
 
+        self.botonDelete_lista = Button(self.miFrame_Pacientes, text="Borrar Seleccion", width=12,command=lambda:self.EliminarData(self.IdSeleccionado()))
+        self.botonDelete_lista.grid(row=1, column=3, padx=10, pady=10)
         #-----------------Separador-----------------------
         self.separator = Frame(self,height=10, bd=1, relief=SUNKEN)
         self.separator.pack()
 
-        #-----------------COMIENZO DE BOTONES-----------------------
-        
-        self.miFrame_Botones = Frame(self,bg="#00CD63")
-        self.miFrame_Botones.pack()
-
-        self.botonRefresh = Button(self.miFrame_Botones, text="Refresh", width=10,command=lambda:self.UpdateTreeViewPacientes())
-        self.botonRefresh.grid(row=4, column=0, padx=10, pady=10)
-
-        self.botonReadUSER =Button(self.miFrame_Botones, text="Modificar", width=10,command=lambda:self.ModificarDataUser(self.leerInfoInputBox(),self.IdSeleccionado()))
-        self.botonReadUSER.grid(row=4, column=1, padx=10, pady=10)
-
-        self.botonUpdate = Button(self.miFrame_Botones, text="Seleccionar", width=10,command=lambda:self.CompletarData(self.IdSeleccionado()))
-        self.botonUpdate.grid(row=4, column=2, padx=10, pady=10)
-
-        self.botonDelete = Button(self.miFrame_Botones, text="Borrar", width=10,command=lambda:self.EliminarData(self.IdSeleccionado()))
-        self.botonDelete.grid(row=4, column=3, padx=10, pady=10)
-
     #-----------------FUNCIONES-----------------------
 
     def InsertarData(self):
-        data=self.leerInfoInputBox()
-        self.Insertar(data)
-        self.UpdateTreeViewPacientes()
-       
+        try:
+            data=self.leerInfoInputBox()
+            if self.Insertar(data):
+                self.UpdateTreeViewPacientes()
+                self.borrarInputBox()
+                messagebox.showinfo("MedicalREC", "Paciente Agregado")
+            else:
+                messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")    
+        except Exception as err:
+            print("Error: {}".format(err))
+            messagebox.showinfo("MedicalREC", "Error en los Datos Ingresados")
+        
+           
     def EliminarData(self,id_paciente):
-        self.Eliminar(id_paciente)
-        self.borrarInputBox()
-        self.UpdateTreeViewPacientes()
+        try:
+            if id_paciente!=-1:
+                opcion=messagebox.askyesno("Eliminar","Desea eliminar EL Paciente Selecionado?")
+                # print (opcion)
+                if opcion:
+                    self.Eliminar(id_paciente)
+                    self.borrarInputBox()
+                    self.UpdateTreeViewPacientes()
+                    messagebox.showinfo("MedicalREC", "Paciente Eliminado")
+        except Exception as err:
+            print("Error: {}".format(err))
+            messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
 
 
     def UpdateTreeViewPacientes(self):
-        print("Refresh : UpdateTreeViewPacientes")
-        for row in self.treePacientes.get_children():
-            self.treePacientes.delete(row)
-        for row in self.BuscarTodos():
-            self.treePacientes.insert('',END, values=row)
+        try:    
+            print("Refresh : UpdateTreeViewPacientes")
+            for row in self.treePacientes.get_children():
+                self.treePacientes.delete(row)
+            for row in self.BuscarTodos():
+                self.treePacientes.insert('',END, values=row)
+        except Exception as err:
+            print("Error: {}".format(err))
 
     def leerInfoInputBox(self):
         listadata =[]
@@ -177,13 +211,17 @@ class PacienteFrame(ttk.Frame,Pacientes):
             return listadata
 
     def borrarInputBox(self):
-        self.datacuadroNombre.set("")
-        self.datacuadroApellidos.set("")
-        self.datacuadroDni.set("")
-        self.datacuadroTelefono.set(0)
-        self.datacuadroDireccion.set("")
-        self.datacuadroEdad.set(0)
-        print("MedicalREC - Se borran todos los campos")
+        try:
+            self.datacuadroNombre.set("")
+            self.datacuadroApellidos.set("")
+            self.datacuadroDni.set("")
+            self.datacuadroTelefono.set(0)
+            self.datacuadroDireccion.set("")
+            self.datacuadroEdad.set(0)
+            self.datacuadroDni_B.set("")
+            print("MedicalREC - Se borran todos los campos")
+        except Exception as err:
+            print("Error: {}".format(err))
 
     def IdSeleccionado(self):
         try:
@@ -196,6 +234,25 @@ class PacienteFrame(ttk.Frame,Pacientes):
         finally:
             print("Id seleccionado:{}".format(id_paciente))
             return id_paciente
+
+    def CompletarData_DNI(self):
+        try:
+            dni=self.datacuadroDni_B.get()
+            datos=self.BuscarporDni(dni)
+            if datos is not None:
+                self.datacuadroNombre.set(datos[1])
+                self.datacuadroApellidos.set(datos[2])
+                self.datacuadroDni.set(datos[3])
+                self.datacuadroTelefono.set(datos[4])
+                self.datacuadroDireccion.set(datos[5])
+                self.datacuadroEdad.set(datos[6])
+                self.id_seleccion=datos[0]
+                messagebox.showinfo("MedicalREC", "Paciente Encontrado")
+            else:
+                messagebox.showinfo("MedicalREC", "Paciente No Encontrado")
+        except Exception as err:
+            print("Error: {}".format(err))
+            messagebox.showinfo("MedicalREC", "Paciente No Encontrado")
 
     def CompletarData(self,id_paciente):
         try:
@@ -210,90 +267,16 @@ class PacienteFrame(ttk.Frame,Pacientes):
             print("Error: {}".format(err))
 
     def ModificarDataUser(self,data,id_paciente):
-        self.Modificar(data,id_paciente)
-        self.UpdateTreeViewPacientes()
-    # def ReadDataUser(self):
-        
-    #     try:
-    #         miConexion = sqlite3.connect("CLIENTES")
-    #         miCursor = miConexion.cursor()
-    #         sql_update_query = """SELECT * FROM CLIENTES WHERE NOMBRE_USUARIO = ?"""
-    #         name=str(self.cuadroNombre.get())
-    #         miCursor.execute(sql_update_query,(name,))
-    #         listamiCursor=miCursor.fetchone() #recuperar los datos
-    #         if(listamiCursor!=None):
-    #             self.datacuadroNombre.set(listamiCursor[1])
-    #             self.datacuadroTelefono.set(listamiCursor[2])
-    #         else:
-    #             messagebox.showinfo("ClientView", "NO ENCONTRADO!!")    
-    #             self.borrarInputBox()
-    #         miConexion.commit()
-    #         miConexion.close()
-    #         self.UpdateTreeViewClientes()
-    #     except:
-    #         print("Failed to ReadData data into sqlite table")
-    #     finally:
-    #         if (miConexion):
-    #             miConexion.close()
-    #             print("The SQLite connection is closed")
-
-
-    # def updateData(self):
-        
-    #     try:    
-    #         miConexion = sqlite3.connect("CLIENTES")
-    #         miCursor = miConexion.cursor()
-    #         sql_update_query="""SELECT * FROM CLIENTES WHERE NOMBRE_USUARIO = ?"""
-    #         name=str(self.cuadroNombre.get())
-    #         miCursor.execute(sql_update_query,(name,))
-    #         listamiCursor=miCursor.fetchone() #recuperar los datos
-    #         if(listamiCursor!=None):
-    #             for usuario in listamiCursor:
-                    
-    #                 data= self.leerInfoInputBox()
-    #                 data.append(listamiCursor[0])
-
-    #             sql_update_query = """UPDATE CLIENTES set NOMBRE_USUARIO = ? ,TELEFONO = ? where ID = ?"""
-    #             miCursor.execute(sql_update_query, data)
-    #             messagebox.showinfo("ClientView App", "BBDD ACTUALIZADA con exito!!")
-    #         else:
-    #             messagebox.showinfo("ClientView App", "No se actualizo!!")
-    #         miConexion.commit()    
-    #         miCursor.close()
-    #         self.UpdateTreeViewClientes()
-    #     except:
-    #         print("Failed to Actualizar data into sqlite table")
-    #     finally:
-    #         if (miConexion):
-    #             miConexion.close()
-    #             print("The SQLite connection is closed")
-
-
-    # def deleteData(self):
-
-    #     try:
-    #         miConexion = sqlite3.connect("CLIENTES")
-    #         miCursor = miConexion.cursor()
-    #         sql_update_query="""SELECT * FROM CLIENTES WHERE NOMBRE_USUARIO = ?"""
-    #         name=str(self.cuadroNombre.get())
-    #         miCursor.execute(sql_update_query,(name,))
-    #         listamiCursor=miCursor.fetchone() #recuperar los datos
-    #         if(listamiCursor!=None):
-    #             sql_update_query = """DELETE FROM CLIENTES WHERE ID = ?"""
-    #             miCursor.execute(sql_update_query, (listamiCursor[0],))
-    #             messagebox.showinfo("ClientView App", "dATO ELIMINADO!!")
-    #         else:
-    #             messagebox.showinfo("ClientView App", "No se PUDO ELIMINAR!!")
-    #         miConexion.commit()    
-    #         miCursor.close()
-    #         self.UpdateTreeViewClientes()
-    #     except:
-    #         print("Failed to deleteData data into sqlite table")
-    #     finally:
-    #         if (miConexion):
-    #             miConexion.close()
-    #             print("The SQLite connection is closed")
-
+        try:
+            if data and id_paciente!=-1 :
+            # if id_paciente!=-1 and not None:
+                self.Modificar(data,id_paciente)
+                self.UpdateTreeViewPacientes()
+                # self.borrarInputBox()
+                messagebox.showinfo("MedicalREC", "Paciente Modificado")
+        except Exception as err:
+            print("Error: {}".format(err))
+            messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
 
 
 class Application(ttk.Frame):
@@ -301,8 +284,10 @@ class Application(ttk.Frame):
     def __init__(self, main_window):
         super().__init__(main_window)
         main_window.title("MedicalREC - Gestion de Base de Datos Pacientes")
-        main_window.geometry("1200x860")
+        main_window.configure(background="#00CD63")
+        main_window.geometry("1024x600")
         self.notebook = ttk.Notebook(self)
+        ttk.Style().configure("TNotebook", background="gray")
         self.pacientes_frame = PacienteFrame(self.notebook)           
         self.notebook.add(self.pacientes_frame, text="Pacientes", padding=10)
         self.notebook.configure(height=900,width=900)

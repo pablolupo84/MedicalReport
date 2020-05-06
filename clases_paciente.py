@@ -5,6 +5,8 @@ from conexion import *
 class Pacientes(Conexion):
 
     def Insertar(self,data):
+        resultado=True
+        print("------------Insertar-----------")
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
@@ -16,11 +18,15 @@ class Pacientes(Conexion):
         except Exception as err:
             print("Error: {}".format(err))
             print("Failed to insert data into clinica.paciente table")
+            resultado=False
         finally:
             if (cnx):
                 self.CerrarConexion(cnx)
+                return resultado
 
     def Modificar(self,data,id_paciente):
+        resultado=True
+        print("------------Modificar-----------")
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
@@ -33,11 +39,15 @@ class Pacientes(Conexion):
         except Exception as err:
             print("Error: {}".format(err))
             print("Failed to Update data into clinica.paciente table")
+            resultado=False
         finally:
             if (cnx):
                 self.CerrarConexion(cnx)
+                return resultado
 
     def Eliminar(self,id_paciente):
+        resultado=True
+        print("------------Eliminar-----------")
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
@@ -48,13 +58,16 @@ class Pacientes(Conexion):
         except Exception as err:
             print("Error: {}".format(err))
             print("Failed to Deleted data into clinica.paciente table")
+            resultado=False
         finally:
             if (cnx):
                 self.CerrarConexion(cnx)
+                return resultado
 
     def BuscarporDni(self,dni):
         """La funcion retorna una tupla con los datos de 
         pacientes segun dni, sino retorna una tupla vacia"""
+        print("------------BuscarporDni-----------")
         personasPorDni=()
         try:    
             cnx=self.Conectar()
@@ -74,6 +87,7 @@ class Pacientes(Conexion):
     def BuscarporID(self,id_paciente):
         """La funcion retorna una tupla con los datos de 
         pacientes segun ID, sino retorna una tupla vacia"""
+        print("------------BuscarporID-----------")
         personasPorID=()
         try:    
             cnx=self.Conectar()
@@ -91,6 +105,7 @@ class Pacientes(Conexion):
                 return personasPorID
     
     def BuscarTodos(self):
+        print("------------BuscarTodos-----------")
         lista=[]
         try:    
             cnx=self.Conectar()
@@ -106,10 +121,6 @@ class Pacientes(Conexion):
             if (cnx):
                 self.CerrarConexion(cnx)
                 return lista
-
-
-
-
 
 # test=Pacientes()
 # data=['sd', '', '31258793', 2, '1 DE MAYO 5343', 35]
