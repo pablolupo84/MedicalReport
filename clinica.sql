@@ -90,18 +90,19 @@ INSERT INTO `paciente` (`nombre`, `apellidos`, `dni`, `telefono`, `direccion`, `
 DROP TABLE IF EXISTS `sesiones`;
 CREATE TABLE IF NOT EXISTS `sesiones` (
   `id_p` int(11) NOT NULL,
-  `fecha` date NOT NULL
+  `fecha` date NOT NULL,
+  `pagado` varchar(5) NOT NULL DEFAULT "NO"
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `sesiones`
 --
 
-INSERT INTO `sesiones` (`id_p`, `fecha`) VALUES
-(1, '2020-04-27'),
-(2, '2020-04-27'),
-(1, '2020-04-27'),
-(2, '2020-04-27');
+INSERT INTO `sesiones` (`id_p`, `fecha`,`pagado`) VALUES
+(1, '2020-04-27',"SI"),
+(2, '2020-04-27',"SI"),
+(1, '2020-04-27',"NO"),
+(2, '2020-04-27',"NO");
 
 
 --
