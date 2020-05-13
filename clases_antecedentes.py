@@ -76,8 +76,28 @@ class Antecedentes(Conexion):
         finally:
             if (cnx):
                 self.CerrarConexion(cnx)
-
+    
     def BuscarTodos(self):
+        print("------------BuscarTodos-----------")
+        lista=[]
+        try:    
+            cnx=self.Conectar()
+            cursor = cnx.cursor()
+            sql_qry="""SELECT * FROM clinica.antecedentes"""
+            cursor.execute(sql_qry)
+            lista = cursor.fetchall()
+
+            print("Record Select successfully into clinica.antecedentes table")
+        except Exception as err:
+            print("Error: {}".format(err))
+            print("Failed to Select data into clinica.antecedentes table")
+        finally:
+            if (cnx):
+                self.CerrarConexion(cnx)
+                return lista
+
+
+    def BuscarTodosAntecedentes(self):
         print("------------BuscarTodos-----------")
         lista=[]
         try:    
