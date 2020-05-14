@@ -70,6 +70,26 @@ class Volantes(Conexion):
             if (cnx):
                 self.CerrarConexion(cnx)
 
+    def BuscarTodosVolantes(self):
+        print("------------BuscarTodos Volantes-----------")
+        lista=[]
+        try:    
+            cnx=self.Conectar()
+            cursor = cnx.cursor()
+            sql_qry="""SELECT * FROM clinica.volante"""
+            cursor.execute(sql_qry)
+            lista = cursor.fetchall()
+
+            print("Record Select successfully into clinica.volante table")
+        except Exception as err:
+            print("Error: {}".format(err))
+            print("Failed to Select data into clinica.volante table")
+        finally:
+            if (cnx):
+                self.CerrarConexion(cnx)
+                return lista
+
+
 
 # test=Volantes()
 # test.Insertar(4,"carga esquiotibilaes")

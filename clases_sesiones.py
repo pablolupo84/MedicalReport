@@ -79,8 +79,8 @@ class Sesiones(Conexion):
             if (cnx):
                 self.CerrarConexion(cnx)
 
-    def BuscarTodos(self):
-        print("------------BuscarTodos-----------")
+    def BuscarTodosSesiones(self):
+        print("------------BuscarTodos Sesiones-----------")
         lista=[]
         try:    
             cnx=self.Conectar()
