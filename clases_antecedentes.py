@@ -3,9 +3,9 @@ from conexion import *
 #Antecedentes
 class Antecedentes(Conexion):
 
-    def Insertar(self,id_paciente,data):
+    def InsertarAntecedente(self,id_paciente,data):
         resultado=True
-        print("------------Insertar-----------")
+        print("------------Insertar Antecedente-----------")
         lista=[id_paciente,data]
         try:    
             cnx=self.Conectar()
@@ -24,8 +24,9 @@ class Antecedentes(Conexion):
                 self.CerrarConexion(cnx)
                 return resultado
 
-    def Modificar(self,id_paciente,data_old,data_new):
+    def ModificarAntecedente(self,id_paciente,data_old,data_new):
         resultado=True
+        print("------------Modificar Antecedente-----------")
         lista=(data_new,id_paciente,data_old[1])
         print("Modificar: {}".format(lista))
         
@@ -45,7 +46,8 @@ class Antecedentes(Conexion):
                 self.CerrarConexion(cnx)
                 return resultado
 
-    def EliminarTodos(self,id_paciente):
+    def EliminarTodosAntecedentes(self,id_paciente):
+        print("------------EliminarTodos Antecedentes-----------")
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
@@ -61,6 +63,7 @@ class Antecedentes(Conexion):
                 self.CerrarConexion(cnx)
 
     def EliminarAntecedente(self,id_paciente,data):
+        print("------------Eliminar Antecedentes-----------")
         data_delete=(id_paciente,data[1])
         print("se borrara: {}".format(data_delete))
         try:    
@@ -76,29 +79,9 @@ class Antecedentes(Conexion):
         finally:
             if (cnx):
                 self.CerrarConexion(cnx)
-    
-    def BuscarTodos(self):
-        print("------------BuscarTodos-----------")
-        lista=[]
-        try:    
-            cnx=self.Conectar()
-            cursor = cnx.cursor()
-            sql_qry="""SELECT * FROM clinica.antecedentes"""
-            cursor.execute(sql_qry)
-            lista = cursor.fetchall()
-
-            print("Record Select successfully into clinica.antecedentes table")
-        except Exception as err:
-            print("Error: {}".format(err))
-            print("Failed to Select data into clinica.antecedentes table")
-        finally:
-            if (cnx):
-                self.CerrarConexion(cnx)
-                return lista
-
 
     def BuscarTodosAntecedentes(self):
-        print("------------BuscarTodos-----------")
+        print("------------BuscarTodos Antecedentes-----------")
         lista=[]
         try:    
             cnx=self.Conectar()
@@ -116,10 +99,10 @@ class Antecedentes(Conexion):
                 self.CerrarConexion(cnx)
                 return lista
 
-    def BuscarporID(self,id_paciente):
+    def BuscarporIDAntecedente(self,id_paciente):
         """La funcion retorna una tupla con los datos de 
         pacientes segun dni, sino retorna una tupla vacia"""
-        print("------------BuscarporID-----------")
+        print("------------BuscarporID Antecedente-----------")
         personasPorID=()
         try:    
             cnx=self.Conectar()
@@ -137,10 +120,10 @@ class Antecedentes(Conexion):
                 # print(personasPorDni)
                 return personasPorID
                 
-    def BuscarporDni(self,dni):
+    def BuscarporDniAntecedente(self,dni):
         """La funcion retorna una tupla con los datos de 
         pacientes segun dni, sino retorna una tupla vacia"""
-        print("------------BuscarporDni-----------")
+        print("------------BuscarporDni Antecedente-----------")
         antecedentes=()
         personasPorDni=()
         try:    

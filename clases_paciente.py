@@ -4,9 +4,9 @@ from conexion import *
 #Pacientes
 class Pacientes(Conexion):
 
-    def Insertar(self,data):
+    def InsertarPaciente(self,data):
         resultado=True
-        print("------------Insertar-----------")
+        print("------------Insertar Paciente-----------")
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
@@ -24,9 +24,9 @@ class Pacientes(Conexion):
                 self.CerrarConexion(cnx)
                 return resultado
 
-    def Modificar(self,data,id_paciente):
+    def ModificarPaciente(self,data,id_paciente):
         resultado=True
-        print("------------Modificar-----------")
+        print("------------Modificar Paciente-----------")
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
@@ -45,9 +45,9 @@ class Pacientes(Conexion):
                 self.CerrarConexion(cnx)
                 return resultado
 
-    def Eliminar(self,id_paciente):
+    def EliminarPaciente(self,id_paciente):
         resultado=True
-        print("------------Eliminar-----------")
+        print("------------Eliminar Paciente-----------")
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
@@ -64,10 +64,10 @@ class Pacientes(Conexion):
                 self.CerrarConexion(cnx)
                 return resultado
 
-    def BuscarporDni(self,dni):
+    def BuscarporDniPaciente(self,dni):
         """La funcion retorna una tupla con los datos de 
         pacientes segun dni, sino retorna una tupla vacia"""
-        print("------------BuscarporDni-----------")
+        print("------------BuscarporDni Paciente-----------")
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
@@ -84,10 +84,10 @@ class Pacientes(Conexion):
                 print(personasPorDni)
                 return personasPorDni
 
-    def BuscarporID(self,id_paciente):
+    def BuscarporIDPaciente(self,id_paciente):
         """La funcion retorna una tupla con los datos de 
         pacientes segun ID, sino retorna una tupla vacia"""
-        print("------------BuscarporID-----------")
+        print("------------BuscarporID Paciente-----------")
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
@@ -105,7 +105,7 @@ class Pacientes(Conexion):
                 return personasPorID
     
     def BuscarporNombreyApellido(self,nombre,apellido):
-        print("------------BuscarporNombreyApellido-----------")
+        print("------------BuscarporNombreyApellido Paciente-----------")
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
@@ -139,8 +139,8 @@ class Pacientes(Conexion):
                 print(pacientes)
                 return pacientes
 
-    def BuscarTodos(self):
-        print("------------BuscarTodos-----------")
+    def BuscarTodosPacientes(self):
+        print("------------BuscarTodos Pacientes-----------")
         lista=[]
         try:    
             cnx=self.Conectar()
