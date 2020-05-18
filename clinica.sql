@@ -142,7 +142,7 @@ ALTER TABLE `antecedentes` ADD KEY `id` (`id_paciente`);
 --
 -- Indices de la tabla `paciente`
 --
-ALTER TABLE `paciente` ADD PRIMARY KEY (`id`);
+-- ALTER TABLE `paciente` ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `sesiones`

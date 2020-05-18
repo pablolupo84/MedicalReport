@@ -89,6 +89,26 @@ class Volantes(Conexion):
                 self.CerrarConexion(cnx)
                 return lista
 
+    def BuscarporIDVolante(self,id_paciente):
+        """La funcion retorna una tupla con los datos de 
+        pacientes segun dni, sino retorna una tupla vacia"""
+        print("------------BuscarporID Volante-----------")
+        personasPorDni=()
+        try:    
+            cnx=self.Conectar()
+            cursor = cnx.cursor()
+            sql_qry="""SELECT * FROM clinica.volante WHERE id_paciente = %s"""
+            cursor.execute(sql_qry,(id_paciente,))
+            personasPorDni = cursor.fetchall()
+            print("Record Select successfully into clinica.volante table")
+        except Exception as err:
+            print("Error: {}".format(err))
+            print("Failed to Select data into clinica.volante table")
+        finally:
+            if (cnx):
+                self.CerrarConexion(cnx)
+                return personasPorDni
+
 
 
 # test=Volantes()

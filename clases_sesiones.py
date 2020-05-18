@@ -98,10 +98,10 @@ class Sesiones(Conexion):
                 self.CerrarConexion(cnx)
                 return lista
 
-    def BuscarporID(self,id_paciente):
+    def BuscarporIDSesion(self,id_paciente):
         """La funcion retorna una tupla con los datos de 
         pacientes segun dni, sino retorna una tupla vacia"""
-        print("------------BuscarporID-----------")
+        print("------------BuscarporID Sesion-----------")
         personasPorDni=()
         try:    
             cnx=self.Conectar()
@@ -119,10 +119,10 @@ class Sesiones(Conexion):
                 # print(personasPorDni)
                 return personasPorDni
                 
-    def BuscarporDni(self,dni):
+    def BuscarporDniSesiones(self,dni):
         """La funcion retorna una tupla con los datos de 
         pacientes segun dni, sino retorna una tupla vacia"""
-        print("------------BuscarporDni-----------")
+        print("------------BuscarporDni Sesiones-----------")
         sesiones=()
         personasPorDni=()
         try:    
@@ -132,7 +132,7 @@ class Sesiones(Conexion):
             cursor.execute(sql_qry,(dni,))
             personasPorDni = cursor.fetchone()
             # print(personasPorDni)
-            sesiones=self.BuscarporID(personasPorDni[0])
+            sesiones=self.BuscarporIDSesion(personasPorDni[0])
             print("Sesiones {}".format(sesiones))
             print("Record Select successfully into clinica.paciente table")
         except Exception as err:

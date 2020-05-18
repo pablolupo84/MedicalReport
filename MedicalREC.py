@@ -14,9 +14,34 @@ from clases_volante import *
 from tkcalendar import DateEntry
 from datetime import date
 
+######################################################################
+#-----------------FUNCIONES COMUNES A TODOS LOS FRAMES----------------
+######################################################################
 def CerrarEdicion(root):
-        root.destroy()
+    root.destroy()
 
+def UpdateTreeView(self,treeName,data_encontrado):
+    try:    
+        # print("Refresh : UpdateTreeViewPacientes")
+        for row in treeName.get_children():
+            treeName.delete(row)
+        for row in data_encontrado:
+            treeName.insert('',END, values=row)
+    except Exception as err:
+        print("Error: {}".format(err))
+
+def DataSeleccionado(self,treeName):
+    data_antecedente=None
+    try:
+        # miSesion=Antecedentes()
+        item_antecedente = treeName.focus()
+        data_antecedente = treeName.item(item_antecedente,"values")
+    except Exception as err:
+        print("Error: {}".format(err))
+    finally:
+        return data_antecedente
+
+######################################################################
 
 #PACIENTE FRAME -> (PACIENTES + ANTECEDENTES)
 class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
@@ -150,7 +175,7 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
         self.treePacientes.column('#6',width=100,minwidth=100,stretch=tk.YES)
         self.treePacientes.column('#7',width=30,minwidth=30,stretch=tk.YES)
 
-        self.UpdateTreeViewPacientes(self.BuscarTodosPacientes())
+        UpdateTreeView(self.miFrame_Pacientes,self.treePacientes,self.BuscarTodosPacientes())
 
         self.scrollVert2=Scrollbar(self.miFrame_Pacientes,command=self.treePacientes.yview)
         self.scrollVert2.grid(row=1,column=2,sticky="nsnew",rowspan=3)
@@ -170,8 +195,8 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
         self.treeAntecedentes.column('#1',width=20,minwidth=20,stretch=tk.YES)
         self.treeAntecedentes.column('#2',width=230,minwidth=230,stretch=tk.YES)
         
-        self.UpdateTreeViewAntecedentes(self.BuscarTodosAntecedentes())
-
+        UpdateTreeView(self.miFrame_Pacientes,self.treeAntecedentes,self.BuscarTodosAntecedentes())
+        
         self.scrollVert2=Scrollbar(self.miFrame_Pacientes,command=self.treeAntecedentes.yview)
         self.scrollVert2.grid(row=1,column=4,sticky="nsnew",rowspan=3)
 
@@ -184,23 +209,12 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
         self.botonDelete_lista = Button(self.miFrame_Pacientes, text="Borrar", width=12,command=lambda:self.EliminarDataAntecedentes())
         self.botonDelete_lista.grid(row=3, column=5, padx=10, pady=10,rowspan=2)
     
-    #-----------------FUNCIONES-----------------------
-    def UpdateTreeViewPacientes(self,data_encontrado):
-        try:    
-            # print("Refresh : UpdateTreeViewPacientes")
-            for row in self.treePacientes.get_children():
-                self.treePacientes.delete(row)
-            for row in data_encontrado:
-                self.treePacientes.insert('',END, values=row)
-        except Exception as err:
-            print("Error: {}".format(err))
-
     def InsertarDataPaciente(self):
         try:
             data,resultado=self.leerInfoInputBox()
             if resultado:            
                 if(self.InsertarPaciente(data)):
-                    self.UpdateTreeViewPacientes(self.BuscarTodosPacientes())
+                    UpdateTreeView(self.miFrame_Pacientes,self.treePacientes,self.BuscarTodosPacientes())
                     self.borrarInputBox()
                     messagebox.showinfo("MedicalREC", "Paciente Agregado")
                 else:
@@ -218,7 +232,7 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
                 if opcion:
                     self.EliminarPaciente(id_paciente)
                     self.borrarInputBox()
-                    self.UpdateTreeViewPacientes(self.BuscarTodosPacientes())
+                    UpdateTreeView(self.miFrame_Pacientes,self.treePacientes,self.BuscarTodosPacientes())
                     messagebox.showinfo("MedicalREC", "Paciente Eliminado")
             else:
                 messagebox.showinfo("MedicalREC", "No hay Paciente seleccionado")
@@ -289,25 +303,13 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
             self.datacuadroDni_B.set("")
             self.datacuadroNombre_B.set("")
             self.datacuadroApellido_B.set("")
-            self.UpdateTreeViewPacientes(self.BuscarTodosPacientes())
-            self.UpdateTreeViewAntecedentes(self.BuscarTodosAntecedentes())
+            UpdateTreeView(self.miFrame_Pacientes,self.treePacientes,self.BuscarTodosPacientes())
+            UpdateTreeView(self.miFrame_Pacientes,self.treeAntecedentes,self.BuscarTodosAntecedentes())
             self.id_seleccion_paciente=-1
             self.id_seleccion_antecedente=-1
             print("MedicalREC - Se borran todos los campos")
         except Exception as err:
             print("Error: {}".format(err))
-
-    def IdSeleccionadoPaciente(self):
-        try:
-            miPaciente=Pacientes()
-            item_paciente = self.treePacientes.focus()
-            id_paciente=int(self.treePacientes.item(item_paciente,"values")[0])
-        except Exception as err:
-            print("Error: {}".format(err))
-            id_paciente=-1
-        finally:
-            print("Id seleccionado Paciente:{}".format(id_paciente))
-            return id_paciente
 
     def CompletarData_DNI(self):
         try:
@@ -322,8 +324,8 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
                 self.datacuadroEdad.set(datos[6])
                 self.id_seleccion_paciente=datos[0]
                 self.id_seleccion_antecedente=datos[0]
-                self.UpdateTreeViewPacientes(listadata)
-                self.UpdateTreeViewAntecedentes(self.BuscarporIDAntecedente(self.id_seleccion_paciente))
+                UpdateTreeView(self.miFrame_Pacientes,self.treePacientes,listadata)
+                UpdateTreeView(self.miFrame_Pacientes,self.treeAntecedentes,self.BuscarporIDAntecedente(self.id_seleccion_antecedente))
                 messagebox.showinfo("MedicalREC", "Paciente Encontrado")
             else:
                 messagebox.showinfo("MedicalREC", "Paciente No Encontrado")
@@ -344,8 +346,8 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
                 self.datacuadroEdad.set(datos[6])
                 self.id_seleccion_paciente=datos[0]
                 self.id_seleccion_antecedente=datos[0]
-                self.UpdateTreeViewPacientes(listadata)
-                self.UpdateTreeViewAntecedentes(self.BuscarporIDAntecedente(self.id_seleccion_paciente))
+                UpdateTreeView(self.miFrame_Pacientes,self.treePacientes,listadata)
+                UpdateTreeView(self.miFrame_Pacientes,self.treeAntecedentes,self.BuscarporIDAntecedente(self.id_seleccion_antecedente))
                 messagebox.showinfo("MedicalREC", "Paciente Encontrado")
             else:
                 messagebox.showinfo("MedicalREC", "Paciente No Encontrado")
@@ -359,27 +361,18 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
                 data,resultado=self.leerInfoInputBox()
                 if resultado: 
                     self.ModificarPaciente(data,id_paciente)
-                    self.UpdateTreeViewPacientes(self.BuscarporIDPaciente(id_paciente))
+                    UpdateTreeView(self.miFrame_Pacientes,self.treePacientes,self.BuscarporIDPaciente(id_paciente))
                     messagebox.showinfo("MedicalREC", "Paciente Modificado")
             else:
                 messagebox.showinfo("MedicalREC", "No hay Pacientes Seleccionado para Editar")
         except Exception as err:
             print("Error: {}".format(err))
             messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
-
-    def UpdateTreeViewAntecedentes(self,data):
-        try:    
-            # print("Refresh : UpdateTreeViewAntecedentes")
-            for row in self.treeAntecedentes.get_children():
-                self.treeAntecedentes.delete(row)
-            for row in data:
-                self.treeAntecedentes.insert('',END, values=row)
-        except Exception as err:
-            print("Error: {}".format(err))
-            
+        
     def EliminarDataAntecedentes(self):
         try:
-            data_old=self.DataSeleccionadoAntecedentes()
+            # data_old=self.DataSeleccionadoAntecedentes()
+            data_old=DataSeleccionado(self.miFrame_Pacientes,self.treeAntecedentes)
             id_paciente=int(data_old[0])
             if id_paciente!=-1:
                 opcion=messagebox.askyesno("Eliminar","Desea eliminar el Antecedente Selecionado?")
@@ -390,31 +383,8 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
             print("Error: {}".format(err))
             messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
         finally:
-            self.UpdateTreeViewPacientes(self.BuscarporIDPaciente(self.id_seleccion_paciente))
-            self.UpdateTreeViewAntecedentes(self.BuscarporIDAntecedente(self.id_seleccion_antecedente))
-
-    def IdSeleccionadoAntecedentes(self):
-        try:
-            miSesion=Antecedentes()
-            item_antecedente = self.treeAntecedentes.focus()
-            id_antecedente=int(self.treeAntecedentes.item(item_antecedente,"values")[0])
-        except Exception as err:
-            print("Error: {}".format(err))
-            id_antecedente=-1
-        finally:
-            print("Id seleccionado Antecedente:{}".format(id_antecedente))
-            return id_antecedente
-
-    def DataSeleccionadoAntecedentes(self):
-        data_sesion=None
-        try:
-            miSesion=Antecedentes()
-            item_antecedente = self.treeAntecedentes.focus()
-            data_antecedente = self.treeAntecedentes.item(item_antecedente,"values")
-        except Exception as err:
-            print("Error: {}".format(err))
-        finally:
-            return data_antecedente
+            UpdateTreeView(self.miFrame_Pacientes,self.treePacientes,self.BuscarporIDPaciente(self.id_seleccion_paciente))
+            UpdateTreeView(self.miFrame_Pacientes,self.treeAntecedentes,self.BuscarporIDAntecedente(self.id_seleccion_antecedente))
 
     def ModificarDataUserAntecedentes(self,root,data_old,id_paciente,data_new):
         lista=(data_new)
@@ -427,7 +397,7 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
                 print("Error: {}".format(err))
                 messagebox.showinfo("MedicalREC", "Error en los Datos Ingresados")
         finally:
-                self.UpdateTreeViewAntecedentes(self.BuscarporIDAntecedente(id_paciente))
+                UpdateTreeView(self.miFrame_Pacientes,self.treeAntecedentes,self.BuscarporIDAntecedente(id_paciente))
                 CerrarEdicion(root)
     
     def IngresarDataAntecedentes(self):
@@ -453,7 +423,7 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
                     print("Error: {}".format(err))
                     messagebox.showinfo("MedicalREC", "Sesion del Listado No seleccionada")
                 finally:
-                    self.UpdateTreeViewAntecedentes(self.BuscarporIDAntecedente(self.id_seleccion_antecedente))
+                    UpdateTreeView(self.miFrame_Pacientes,self.treeAntecedentes,self.BuscarporIDAntecedente(self.id_seleccion_antecedente))
         else:
             messagebox.showinfo("MedicalREC", "No hay Paciente Seleccionado")          
 
@@ -469,12 +439,13 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
                 print("Error: {}".format(err))
                 messagebox.showinfo("MedicalREC", "Error en los Datos Ingresados")
         finally:
-                self.UpdateTreeViewAntecedentes(self.BuscarporIDAntecedente(id_paciente))
+                UpdateTreeView(self.miFrame_Pacientes,self.treeAntecedentes,self.BuscarporIDAntecedente(id_paciente))
                 CerrarEdicion(root)
 
     def ModificarDataAntecedentes(self):
         try:
-            data_old=self.DataSeleccionadoAntecedentes()
+            data_old=DataSeleccionado(self.miFrame_Pacientes,self.treeAntecedentes)
+            print(data_old)
             self.id_seleccion_antecedente=int(data_old[0])
             edit = tk.Tk()
             edit.title("MedicalREC - Edit Sesiones")
@@ -492,9 +463,11 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
                 print("Error: {}".format(err))
                 messagebox.showinfo("MedicalREC", "Sesion del Listado No seleccionada")
 
-########################################################################################################################################################
+##----FIN DE FRAMA PACIENTES---------
 ########################################################################################################################################################
 
+
+########################################################################################################################################################
 
 #VOLANTES FRAME -> (VOLANTE + SESIONES)
 class VolanteFrame(ttk.Frame,Volantes,Sesiones):
@@ -524,7 +497,7 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
         self.var_check = StringVar()
         self.var_check.set("NO")
 
-        # -----------------DEFINICION DE CUADROS-----------------------
+        # -----------------DEFINICION DE CUADROS----------------------
         self.cuadroNombre = Entry(self.miFrame_Campos, textvariable=self.datacuadroNombre,width=25)
         self.cuadroNombre.grid(row=1, column=1, padx=10, pady=1)
         self.cuadroNombre.config(justify="center")
@@ -600,7 +573,7 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
             command=lambda:self.ModificarDataPaciente(self.id_seleccion_paciente))
         self.botonEdit.grid(row=5, column=1, padx=10, pady=10)
 
-        self.botonDelete = Button(self.miFrame_Campos, text="Borrar", width=12,command=lambda:self.EliminarData(self.id_seleccion_paciente))
+        self.botonDelete = Button(self.miFrame_Campos, text="Borrar", width=12,command=lambda:self.EliminarDataVolante())
         self.botonDelete.grid(row=5, column=2, padx=10, pady=10)
 
         self.botonLimpiar = Button(self.miFrame_Campos, text="Limpiar", width=12,command=lambda:self.borrarInputBox())
@@ -655,7 +628,8 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
         self.treeVolantes.column('#5',width=235,minwidth=100,stretch=tk.YES)
         self.treeVolantes.column('#6',width=50,minwidth=50,stretch=tk.YES)
 
-        self.UpdateTreeViewVolantes(self.BuscarTodosVolantes())
+        UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarTodosVolantes())
+        # self.UpdateTreeViewVolantes(self.BuscarTodosVolantes())
 
         self.scrollVert2=Scrollbar(self.miFrame_Volantes,command=self.treeVolantes.yview)
         self.scrollVert2.grid(row=1,column=2,sticky="nsnew",rowspan=3)
@@ -677,7 +651,8 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
         self.treeSesiones.column('#2',width=100,minwidth=100,stretch=tk.YES)
         self.treeSesiones.column('#3',width=50,minwidth=50,stretch=tk.YES)
         
-        self.UpdateTreeViewSesiones(self.BuscarTodosSesiones())
+        # self.UpdateTreeViewSesiones(self.BuscarTodosSesiones())
+        UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarTodosSesiones())
 
         self.scrollVert2=Scrollbar(self.miFrame_Volantes,command=self.treeSesiones.yview)
         self.scrollVert2.grid(row=1,column=4,sticky="nsnew",rowspan=3)
@@ -688,32 +663,10 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
         self.botonEditar_lista = Button(self.miFrame_Volantes, text="Editar", width=12,command=lambda:self.ModificarDataAntecedentes())
         self.botonEditar_lista.grid(row=2, column=5, padx=10, pady=10,rowspan=2)
         
-        self.botonDelete_lista = Button(self.miFrame_Volantes, text="Borrar", width=12,command=lambda:self.EliminarDataAntecedentes())
+        self.botonDelete_lista = Button(self.miFrame_Volantes, text="Borrar", width=12,command=lambda:self.EliminarDataSession())
         self.botonDelete_lista.grid(row=3, column=5, padx=10, pady=10,rowspan=2)
 
     #-----------------FUNCIONES-----------------------
-        
-    def UpdateTreeViewVolantes(self,data):
-        try:    
-            print("Refresh : UpdateTreeViewVolantes")
-            print(data)
-            for row in self.treeVolantes.get_children():
-                self.treeVolantes.delete(row)
-            for row in data:
-                self.treeVolantes.insert('',END, values=row)
-        except Exception as err:
-            print("Error: {}".format(err))
-
-    def UpdateTreeViewSesiones(self,data):
-        try:    
-            print("Refresh : UpdateTreeViewSesiones")
-            print(data)
-            for row in self.treeSesiones.get_children():
-                self.treeSesiones.delete(row)
-            for row in data:
-                self.treeSesiones.insert('',END, values=row)
-        except Exception as err:
-            print("Error: {}".format(err))
 
     def InsertarData(self):
         if self.id_seleccion != -1:
@@ -731,17 +684,33 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
                     print("Error: {}".format(err))
                     messagebox.showinfo("MedicalREC", "Error en los Datos Ingresados")
                 finally:
-                    self.UpdateTreeViewSesiones(self.BuscarporID(self.id_seleccion))
+                    UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDVolante(self.id_seleccion))
         else:
             messagebox.showinfo("MedicalREC", "No hay Paciente Seleccionado")          
                 
-    def EliminarData(self):
-        data_old=self.DataSeleccionado()
+    def EliminarDataVolante(self):
+        data_old=DataSeleccionado(self.miFrame_Volantes,self.treeVolantes)
+        id_paciente=int(data_old[0])
+        try:
+            if id_paciente!=-1:
+                opcion=messagebox.askyesno("Eliminar","Desea eliminar El Volante Selecionado?")
+                if opcion:
+                    self.EliminarVolante(id_paciente,data_old)
+                    self.borrarInputBox()
+                    messagebox.showinfo("MedicalREC", "Volante Eliminado")
+        except Exception as err:
+            print("Error: {}".format(err))
+            messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
+        finally:
+            UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDVolante(id_paciente))
+
+
+    def EliminarDataSession(self):
+        data_old=DataSeleccionado(self.miFrame_Volantes,self.treeSesiones)
         id_paciente=int(data_old[0])
         try:
             if id_paciente!=-1:
                 opcion=messagebox.askyesno("Eliminar","Desea eliminar la session Selecionado?")
-                # print (opcion)
                 if opcion:
                     self.EliminarSesion(id_paciente,data_old)
                     self.borrarInputBox()
@@ -750,14 +719,13 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
             print("Error: {}".format(err))
             messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
         finally:
-            self.UpdateTreeViewSesiones(self.BuscarporID(id_paciente))
+            UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporID(id_paciente))
 
     def leerInfoInputBox(self):
         print(self.cal_add.get_date())
         print(self.var.get())
 
         return [self.cal_add.get_date(),self.var.get()]
-
 
     def borrarInputBox(self):
         try:
@@ -768,41 +736,21 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
             self.datacuadroDireccion.set("")
             self.datacuadroEdad.set(0)
             self.datacuadroDni_B.set("")
-            self.R2.select()
-            self.R1.deselect()
-
+            self.datacuadroNombre_B.set("")
+            self.datacuadroApellido_B.set("")
+            UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarTodosVolantes())
+            UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarTodosSesiones())
+            self.id_seleccion_volante=-1
+            self.id_seleccion_sesion=-1
             print("MedicalREC - Se borran todos los campos")
         except Exception as err:
             print("Error: {}".format(err))
 
-    def IdSeleccionado(self):
-        try:
-            miSesion=Sesiones()
-            item_sesion = self.treeSesiones.focus()
-            id_sesion=int(self.treeSesiones.item(item_sesion,"values")[0])
-        except Exception as err:
-            print("Error: {}".format(err))
-            id_sesion=-1
-        finally:
-            print("Id seleccionado:{}".format(id_sesion))
-            return id_sesion
-
-    def DataSeleccionado(self):
-        data_sesion=None
-        try:
-            miSesion=Sesiones()
-            item_sesion = self.treeSesiones.focus()
-            data_sesion=self.treeSesiones.item(item_sesion,"values")
-        except Exception as err:
-            print("Error: {}".format(err))
-        finally:
-            return data_sesion
-
     def CompletarData_DNI(self):
         try:
-            dni=self.datacuadroDni_B.get()
-            sesiones,datos=self.BuscarporDni(dni)
-            print(datos)
+            pacientes=Pacientes()
+            listadata=pacientes.BuscarporDniPaciente(self.datacuadroDni_B.get())
+            datos=listadata[0]
             if datos is not None:
                 self.datacuadroNombre.set(datos[1])
                 self.datacuadroApellidos.set(datos[2])
@@ -810,18 +758,41 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
                 self.datacuadroTelefono.set(datos[4])
                 self.datacuadroDireccion.set(datos[5])
                 self.datacuadroEdad.set(datos[6])
-                self.id_seleccion=datos[0]
-                print(self.id_seleccion)
-                self.UpdateTreeViewSesiones(sesiones)
-                messagebox.showinfo("MedicalREC", "Paciente Con Sesiones Encontrado")
+                self.id_seleccion_paciente=datos[0]
+                self.id_seleccion_sesion=datos[0]
+                self.id_seleccion_volante=datos[0]
+                UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarporIDVolante(self.id_seleccion_paciente))
+                UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDSesion(self.id_seleccion_sesion))
+                messagebox.showinfo("MedicalREC", "Paciente Encontrado")
             else:
-                self.borrarInputBox()
-                self.id_seleccion=-1
-                self.UpdateTreeViewSesiones(sesiones)
-                messagebox.showinfo("MedicalREC", "Paciente Sin Sesiones")
+                messagebox.showinfo("MedicalREC", "Paciente No Encontrado")
         except Exception as err:
             print("Error: {}".format(err))
-            messagebox.showinfo("MedicalREC", "Paciente Sin Sesiones")
+            messagebox.showinfo("MedicalREC", "Paciente No Encontrado")
+
+    def CompletarData_NombreyApellido(self):
+        try:
+            pacientes=Pacientes()
+            listadata=pacientes.BuscarporNombreyApellido(self.datacuadroNombre_B.get(),self.datacuadroApellido_B.get())
+            datos=listadata[0]
+            if datos is not None:
+                self.datacuadroNombre.set(datos[1])
+                self.datacuadroApellidos.set(datos[2])
+                self.datacuadroDni.set(datos[3])
+                self.datacuadroTelefono.set(datos[4])
+                self.datacuadroDireccion.set(datos[5])
+                self.datacuadroEdad.set(datos[6])
+                self.id_seleccion_paciente=datos[0]
+                self.id_seleccion_sesion=datos[0]
+                self.id_seleccion_volante=datos[0]
+                UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarporIDVolante(self.id_seleccion_paciente))
+                UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDSesion(self.id_seleccion_sesion))
+                messagebox.showinfo("MedicalREC", "Paciente Encontrado")
+            else:
+                messagebox.showinfo("MedicalREC", "Paciente No Encontrado")
+        except Exception as err:
+            print("Error: {}".format(err))
+            messagebox.showinfo("MedicalREC", "Paciente No Encontrado")    
 
     def Editar(self,root,data_old,id_paciente,data_new):
         
@@ -838,7 +809,7 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
                 print("Error: {}".format(err))
                 messagebox.showinfo("MedicalREC", "Error en los Datos Ingresados")
         finally:
-                self.UpdateTreeViewSesiones(self.BuscarporID(id_paciente))
+                UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporID(id_paciente))
                 CerrarEdicion(root)
     
     def seleccionar(self,value):
@@ -846,7 +817,8 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
 
     def ModificarDataUser(self):
         try:
-            data_old=self.DataSeleccionado()
+            # data_old=self.DataSeleccionado()
+            data_old=DataSeleccionado(self.treeSesiones)
             id_paciente=int(data_old[0])
             edit = tk.Tk()
             edit.title("MedicalREC - Edit Sesiones")

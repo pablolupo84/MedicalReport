@@ -133,7 +133,7 @@ class Antecedentes(Conexion):
             cursor.execute(sql_qry,(dni,))
             personasPorDni = cursor.fetchone()
             # print(personasPorDni)
-            antecedentes=self.BuscarporID(personasPorDni[0])
+            antecedentes=self.BuscarporIDAntecedente(personasPorDni[0])
             print("Sesiones {}".format(antecedentes))
             print("Record Select successfully into clinica.paciente table")
         except Exception as err:
