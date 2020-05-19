@@ -375,18 +375,22 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
         try:
             # data_old=self.DataSeleccionadoAntecedentes()
             data_old=DataSeleccionado(self.miFrame_Pacientes,self.treeAntecedentes)
-            id_paciente=int(data_old[0])
-            if id_paciente!=-1:
+            self.id_seleccion_paciente=int(data_old[0])
+            if self.id_seleccion_paciente!=-1:
                 opcion=messagebox.askyesno("Eliminar","Desea eliminar el Antecedente Selecionado?")
                 if opcion:
-                    self.EliminarAntecedente(id_paciente,data_old)
+                    self.EliminarAntecedente(self.id_seleccion_paciente,data_old)
                     messagebox.showinfo("MedicalREC", "Antecedente Eliminado")
         except Exception as err:
             print("Error: {}".format(err))
             messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
         finally:
-            UpdateTreeView(self.miFrame_Pacientes,self.treePacientes,self.BuscarporIDPaciente(self.id_seleccion_paciente))
-            UpdateTreeView(self.miFrame_Pacientes,self.treeAntecedentes,self.BuscarporIDAntecedente(self.id_seleccion_antecedente))
+            if self.id_seleccion_paciente!=-1:
+                UpdateTreeView(self.miFrame_Pacientes,self.treePacientes,self.BuscarporIDPaciente(self.id_seleccion_paciente))
+                UpdateTreeView(self.miFrame_Pacientes,self.treeAntecedentes,self.BuscarporIDAntecedente(self.id_seleccion_antecedente))
+            else:
+                UpdateTreeView(self.miFrame_Pacientes,self.treePacientes,self.BuscarTodosPacientes())
+                UpdateTreeView(self.miFrame_Pacientes,self.treeAntecedentes,self.BuscarTodosAntecedentes())
 
     def ModificarDataUserAntecedentes(self,root,data_old,id_paciente,data_new):
         lista=(data_new)
@@ -564,11 +568,11 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
         self.EdadLabel.grid(row=2, column=4, padx=10, pady=10)
 
         #-----------------COMIENZO DE BOTONES-----------------------
-        self.botonAgregar = Button(self.miFrame_Campos, text="Agregar", width=12,command=lambda:self.InsertarDataPaciente())
+        self.botonAgregar = Button(self.miFrame_Campos, text="Agregar", width=12,command=lambda:self.InsertarDataVolantes())
         self.botonAgregar.grid(row=5, column=0, padx=10, pady=10)
 
         self.botonEdit = Button(self.miFrame_Campos, text="Modificar", width=12,
-            command=lambda:self.ModificarDataPaciente(self.id_seleccion_paciente))
+            command=lambda:self.ModificarDataVolantes())
         self.botonEdit.grid(row=5, column=1, padx=10, pady=10)
 
         self.botonDelete = Button(self.miFrame_Campos, text="Borrar", width=12,command=lambda:self.EliminarDataVolante())
@@ -665,11 +669,164 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
         self.botonDelete_lista.grid(row=3, column=5, padx=10, pady=10,rowspan=2)
 
     #-----------------FUNCIONES PARA VOLANTES-----------------------
+
+    def InsertarDataVolantes(self):
+        try:
+            # data_old=self.DataSeleccionado()
+            id_paciente=self.id_seleccion_paciente
+            if id_paciente != -1:
+                edit = tk.Tk()
+                edit.title("MedicalREC - Ingresar Volantes")
+                edit.configure(width="350", height="350")
+                edit.withdraw()
+                edit.update_idletasks() # Update "requested size" from geometry manager 
+
+                x = (edit.winfo_screenwidth() - edit.winfo_reqwidth())/2 
+                y = (edit.winfo_screenheight() - edit.winfo_reqheight())/2 
+                edit.geometry("+%d+%d" % (x, y)) 
+
+                # This seems to draw the window frame immediately, so only call deiconify() 
+                # after setting correct window position 
+                edit.deiconify() 
+                
+                #-----------------COMIENZO DE ETIQUETAS-----------------------
+                TipoLabel = Label(edit, text="Tipo: ",bg="#FFEEDD",width=12)
+                TipoLabel.grid(row=0, column=0, padx=10, pady=10)
+
+                volanteLabel = Label(edit, text="Volante: ",bg="#FFEEDD",width=12)
+                volanteLabel.grid(row=1, column=0, padx=10, pady=10)
+
+                patologiaLabel = Label(edit, text="Patologia: ",bg="#FFEEDD",width=12)
+                patologiaLabel.grid(row=2, column=0, padx=10, pady=10)
+
+                tratamientoLabel = Label(edit, text="Tratamiento: ",bg="#FFEEDD",width=12)
+                tratamientoLabel.grid(row=3, column=0, padx=10, pady=10)
+
+                cuadroTipo = ttk.Combobox(edit)
+                cuadroTipo.place(x=50, y=50,width=25)
+                lista=['Particular','Sanitas','Mafre','DKV','AXA','MCmutual','Solimat','Antares','Mercadona'] 
+                cuadroTipo["values"] = lista
+                cuadroTipo.grid(row=0, column=1, padx=10, pady=1)
+                               
+                cuadroVolante = Entry(edit,width=25)
+                cuadroVolante.grid(row=1, column=1, padx=10, pady=1)
+                
+                cuadroPatologia = Entry(edit,width=25)
+                cuadroPatologia.grid(row=2, column=1, padx=10, pady=1)
+                
+                cuadroTratamiento = Entry(edit,width=25)
+                cuadroTratamiento.grid(row=3, column=1, padx=10, pady=1)
+
+                botonAceptar = Button(edit, text="ACEPTAR ", width=12,command=lambda:self.InsertarVolante(edit,id_paciente,cuadroTipo.get(),cuadroVolante.get(),cuadroPatologia.get(),cuadroTratamiento.get()))
+                botonAceptar.grid(row=4, column=1, padx=10, pady=10)
+            else:
+                messagebox.showinfo("MedicalREC", "No se selecciono ningun Paciente")   
+        except Exception as err:
+                print("Error: {}".format(err))
+                messagebox.showinfo("MedicalREC", "Sesion del Listado No seleccionada")   
+
+    def InsertarVolante(self,root,id_paciente,dataTipo,dataVolante,dataPatologia,dataTratamiento): 
+        try:
+            if dataVolante is None:
+                dataVolante=0
+            else:
+                int(dataVolante)
+            data_new=[dataTipo,dataVolante,dataPatologia,dataTratamiento,0]
+            print("Data New; {}".format(data_new))
+            # data_old=self.leerInfoInputBox()
+            if self.InsertarVolantes(id_paciente,data_new):
+                messagebox.showinfo("MedicalREC", "Volante Insertado")
+            else:
+                messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
+                
+        except Exception as err:
+                print("Error: {}".format(err))
+                messagebox.showinfo("MedicalREC", "Error en los Datos Ingresados")
+        finally:
+                UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarporIDVolante(self.id_seleccion_paciente))
+                CerrarEdicion(root)
+
+    def ModificarDataVolantes(self):
+        try:
+            data_old=DataSeleccionado(self.miFrame_Volantes,self.treeVolantes)
+            id_paciente=self.id_seleccion_paciente
+            if id_paciente != -1:
+                edit = tk.Tk()
+                edit.title("MedicalREC - Modificar Volantes")
+                edit.configure(width="350", height="350")
+                edit.withdraw()
+                edit.update_idletasks() # Update "requested size" from geometry manager 
+
+                x = (edit.winfo_screenwidth() - edit.winfo_reqwidth())/2 
+                y = (edit.winfo_screenheight() - edit.winfo_reqheight())/2 
+                edit.geometry("+%d+%d" % (x, y)) 
+
+                # This seems to draw the window frame immediately, so only call deiconify() 
+                # after setting correct window position 
+                edit.deiconify() 
+                #-----------------COMIENZO DE ETIQUETAS-----------------------
+                TipoLabel = Label(edit, text="Tipo: ",bg="#FFEEDD",width=12)
+                TipoLabel.grid(row=0, column=0, padx=10, pady=10)
+
+                volanteLabel = Label(edit, text="Volante: ",bg="#FFEEDD",width=12)
+                volanteLabel.grid(row=1, column=0, padx=10, pady=10)
+
+                patologiaLabel = Label(edit, text="Patologia: ",bg="#FFEEDD",width=12)
+                patologiaLabel.grid(row=2, column=0, padx=10, pady=10)
+
+                tratamientoLabel = Label(edit, text="Tratamiento: ",bg="#FFEEDD",width=12)
+                tratamientoLabel.grid(row=3, column=0, padx=10, pady=10)
+
+                cuadroTipo = ttk.Combobox(edit)
+                cuadroTipo.place(x=50, y=50,width=25)
+                lista=['Particular','Sanitas','Mafre','DKV','AXA','MCmutual','Solimat','Antares','Mercadona'] 
+                cuadroTipo["values"] = lista
+                cuadroTipo.grid(row=0, column=1, padx=10, pady=1)
+                               
+                cuadroVolante = Entry(edit,width=25)
+                cuadroVolante.grid(row=1, column=1, padx=10, pady=1)
+                
+                cuadroPatologia = Entry(edit,width=25)
+                cuadroPatologia.grid(row=2, column=1, padx=10, pady=1)
+                
+                cuadroTratamiento = Entry(edit,width=25)
+                cuadroTratamiento.grid(row=3, column=1, padx=10, pady=1)
+
+                botonAceptar = Button(edit, text="ACEPTAR ", width=12,command=lambda:self.ModificarVolante(edit,id_paciente,data_old,cuadroTipo.get(),cuadroVolante.get(),cuadroPatologia.get(),cuadroTratamiento.get()))
+                botonAceptar.grid(row=4, column=1, padx=10, pady=10)
+                
+            else:
+                messagebox.showinfo("MedicalREC", "No se selecciono ningun Paciente")   
+        except Exception as err:
+                print("Error: {}".format(err))
+                messagebox.showinfo("MedicalREC", "Sesion del Listado No seleccionada")   
+
+    def ModificarVolante(self,root,id_paciente,data_old,dataTipo,dataVolante,dataPatologia,dataTratamiento):
+        try:
+            if dataVolante is None:
+                dataVolante=0
+            else:
+                int(dataVolante)
+            lista=[dataTipo,dataVolante,dataPatologia,dataTratamiento,0]
+            print("Data New; {}".format(lista))
+            # print("Data New; {}".format(lista))
+            # data_old=self.leerInfoInputBox()
+            if self.ModificarVolantes(id_paciente,data_old,lista):
+                messagebox.showinfo("MedicalREC", "Volante Mpdificado")
+            else:
+                messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")        
+        except Exception as err:
+                print("Error: {}".format(err))
+                messagebox.showinfo("MedicalREC", "Error en los Datos Ingresados")
+        finally:
+                UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDSesion(self.id_seleccion_sesion))
+                UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarporIDSesion(self.id_seleccion_volante))
+                CerrarEdicion(root)
                 
     def EliminarDataVolante(self):
-        data_old=DataSeleccionado(self.miFrame_Volantes,self.treeVolantes)
-        id_paciente=int(data_old[0])
         try:
+            data_old=DataSeleccionado(self.miFrame_Volantes,self.treeVolantes)
+            id_paciente=int(data_old[0])
             if id_paciente!=-1:
                 opcion=messagebox.askyesno("Eliminar","Desea eliminar El Volante Selecionado?")
                 if opcion:
@@ -678,9 +835,10 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
                     messagebox.showinfo("MedicalREC", "Volante Eliminado")
         except Exception as err:
             print("Error: {}".format(err))
-            messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
+            messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion- Seleccione un Volante!!")
         finally:
-            UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDVolante(id_paciente))
+            UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarTodosSesiones())
+            UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarTodosVolantes())
 
     def borrarInputBox(self):
         try:
@@ -753,20 +911,24 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
     #-----------------FUNCIONES PARA SESIONES-----------------------
 
     def EliminarDataSession(self):
-        data_old=DataSeleccionado(self.miFrame_Volantes,self.treeSesiones)
-        id_paciente=int(data_old[0])
         try:
-            if id_paciente!=-1:
+            data_old=DataSeleccionado(self.miFrame_Volantes,self.treeSesiones)
+            self.id_seleccion_paciente=int(data_old[0])
+            if self.id_seleccion_paciente!=-1:
                 opcion=messagebox.askyesno("Eliminar","Desea eliminar la session Selecionado?")
                 if opcion:
-                    self.EliminarSesion(id_paciente,data_old)
-                    self.borrarInputBox()
+                    self.EliminarSesion(self.id_seleccion_paciente,data_old)
+                    # self.borrarInputBox()
                     messagebox.showinfo("MedicalREC", "Sesion Eliminado")
         except Exception as err:
             print("Error: {}".format(err))
-            messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
+            messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion-Seleccione una Session!!")
         finally:
-            UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporID(id_paciente))
+            if self.id_seleccion_paciente!=-1:
+                UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDSesion(self.id_seleccion_paciente))
+            else:
+                UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarTodosSesiones())
+                UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarTodosVolantes())
 
     def leerInfoInputBox(self):
         print(self.cal_add.get_date())
@@ -792,7 +954,12 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
                 print("Error: {}".format(err))
                 messagebox.showinfo("MedicalREC", "Error en los Datos Ingresados")
         finally:
-                UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDSesion(self.id_seleccion_sesion))
+                if self.id_seleccion_paciente!=-1:
+                    UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDSesion(self.id_seleccion_paciente))
+                    UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarporIDVolante(self.id_seleccion_paciente))
+                else:
+                    UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarTodosSesiones())
+                    UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarTodosVolantes())
                 CerrarEdicion(root)
     
     def InsertarDataSesiones(self):
@@ -850,6 +1017,7 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
                 messagebox.showinfo("MedicalREC", "Error en los Datos Ingresados")
         finally:
                 UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDSesion(self.id_seleccion_sesion))
+                UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarporIDVolante(self.id_seleccion_volante))
                 CerrarEdicion(root)
     
     def ModificarDataSesiones(self):

@@ -95,6 +95,19 @@ CREATE TABLE IF NOT EXISTS `sesiones` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Disparadores `sesiones`
+--
+
+DELIMITER $$
+
+CREATE TRIGGER `volante` AFTER INSERT ON `sesiones`
+FOR EACH ROW BEGIN
+	UPDATE volante 
+		set total = total + 1 
+	WHERE (id_paciente = new.id_p);
+END$$
+DELIMITER ;
+--
 -- Volcado de datos para la tabla `sesiones`
 --
 
