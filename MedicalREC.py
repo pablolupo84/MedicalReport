@@ -14,9 +14,10 @@ from clases_volante import *
 from tkcalendar import DateEntry
 from datetime import date
 
-######################################################################
-#-----------------FUNCIONES COMUNES A TODOS LOS FRAMES----------------
-######################################################################
+#########################################################################################
+#-----------------FUNCIONES COMUNES A TODOS LOS FRAMES-----------------------------------
+#########################################################################################
+
 def CerrarEdicion(root):
     root.destroy()
 
@@ -41,9 +42,10 @@ def DataSeleccionado(self,treeName):
     finally:
         return data_antecedente
 
-######################################################################
+#########################################################################################
+#-----------------#PACIENTE FRAME -> (PACIENTES + ANTECEDENTES)--------------------------
+#########################################################################################
 
-#PACIENTE FRAME -> (PACIENTES + ANTECEDENTES)
 class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
     
     def __init__(self, *args, **kwargs):
@@ -410,6 +412,15 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
                     edit = tk.Tk()
                     edit.title("MedicalREC - Edit Sesiones")
                     edit.configure(width="350", height="350")
+                    edit.withdraw()
+                    edit.update_idletasks() # Update "requested size" from geometry manager 
+                    x = (edit.winfo_screenwidth() - edit.winfo_reqwidth())/2 
+                    y = (edit.winfo_screenheight() - edit.winfo_reqheight())/2 
+                    edit.geometry("+%d+%d" % (x, y)) 
+
+                    # This seems to draw the window frame immediately, so only call deiconify() 
+                    # after setting correct window position 
+                    edit.deiconify() 
                     var_check=StringVar()
                     ComentarioLabel = Label(edit, text="Enfermedades")
                     ComentarioLabel.grid(row=0, column=0, padx=10, pady=10)
@@ -450,6 +461,16 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
             edit = tk.Tk()
             edit.title("MedicalREC - Edit Sesiones")
             edit.configure(width="350", height="350")
+            edit.withdraw()
+            edit.update_idletasks() # Update "requested size" from geometry manager 
+
+            x = (edit.winfo_screenwidth() - edit.winfo_reqwidth())/2 
+            y = (edit.winfo_screenheight() - edit.winfo_reqheight())/2 
+            edit.geometry("+%d+%d" % (x, y)) 
+
+            # This seems to draw the window frame immediately, so only call deiconify() 
+            # after setting correct window position 
+            edit.deiconify() 
             var_check=StringVar()
             ComentarioLabel = Label(edit, text="Enfermedades")
             ComentarioLabel.grid(row=0, column=0, padx=10, pady=10)
@@ -463,13 +484,14 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
                 print("Error: {}".format(err))
                 messagebox.showinfo("MedicalREC", "Sesion del Listado No seleccionada")
 
-##----FIN DE FRAMA PACIENTES---------
-########################################################################################################################################################
+##----FIN DE FRAME PACIENTES---------
 
 
-########################################################################################################################################################
 
-#VOLANTES FRAME -> (VOLANTE + SESIONES)
+#########################################################################################
+#-----------------#VOLANTES FRAME -> (VOLANTE + SESIONES)--------------------------------
+#########################################################################################
+
 class VolanteFrame(ttk.Frame,Volantes,Sesiones):
     
     def __init__(self, *args, **kwargs):
@@ -540,30 +562,6 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
 
         self.EdadLabel = Label(self.miFrame_Campos, text="Edad: ",bg="#FFEEDD",width=12)
         self.EdadLabel.grid(row=2, column=4, padx=10, pady=10)
-
-        # self.botonAgregar = Button(self.miFrame_Campos, text="Agregar", width=12,command=lambda:self.InsertarData())
-        # self.botonAgregar.grid(row=4, column=0, padx=10, pady=10)
-
-        # self.R1 = Radiobutton(self.miFrame_Campos, text = "Pagado", variable = self.var, value = "YES")
-        # self.R1.grid(row=5, column=0, padx=10, pady=10)
-        # self.R1.deselect()
-        # self.R2 = Radiobutton(self.miFrame_Campos, text = "No Pago", variable = self.var, value = "NO")
-        # self.R2.grid(row=5, column=1, padx=10, pady=10)
-        # self.R2.select()
-
-        # self.botonEdit = Button(self.miFrame_Campos, text="Editar", width=12,
-        #     command=lambda:self.ModificarDataUser())
-        # self.botonEdit.grid(row=4, column=2, padx=10, pady=10)
-
-        # self.botonDelete = Button(self.miFrame_Campos, text="Borrar", width=12,command=lambda:self.EliminarData())
-        # self.botonDelete.grid(row=4, column=3, padx=10, pady=10)
-
-
-        # self.cal_add=DateEntry(self.miFrame_Campos,dateformat=3,width=12, background='darkblue',
-        #                     foreground='white', borderwidth=4,Calendar =2020)
-        # self.cal_add.grid(row=4,column=1,padx=10, pady=10)
-
-
 
         #-----------------COMIENZO DE BOTONES-----------------------
         self.botonAgregar = Button(self.miFrame_Campos, text="Agregar", width=12,command=lambda:self.InsertarDataPaciente())
@@ -649,7 +647,7 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
         self.treeSesiones.column('#0',width=30,minwidth=30,stretch=tk.YES)
         self.treeSesiones.column('#1',width=20,minwidth=20,stretch=tk.YES)
         self.treeSesiones.column('#2',width=100,minwidth=100,stretch=tk.YES)
-        self.treeSesiones.column('#3',width=50,minwidth=50,stretch=tk.YES)
+        self.treeSesiones.column('#3',width=55,minwidth=55,stretch=tk.YES)
         
         # self.UpdateTreeViewSesiones(self.BuscarTodosSesiones())
         UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarTodosSesiones())
@@ -657,36 +655,16 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
         self.scrollVert2=Scrollbar(self.miFrame_Volantes,command=self.treeSesiones.yview)
         self.scrollVert2.grid(row=1,column=4,sticky="nsnew",rowspan=3)
 
-        self.botonAgregar_lista = Button(self.miFrame_Volantes, text="Agregar", width=12,command=lambda:self.IngresarDataAntecedentes())
+        self.botonAgregar_lista = Button(self.miFrame_Volantes, text="Agregar", width=12,command=lambda:self.InsertarDataSesiones())
         self.botonAgregar_lista.grid(row=1, column=5, padx=10, pady=10,rowspan=2)
 
-        self.botonEditar_lista = Button(self.miFrame_Volantes, text="Editar", width=12,command=lambda:self.ModificarDataAntecedentes())
+        self.botonEditar_lista = Button(self.miFrame_Volantes, text="Editar", width=12,command=lambda:self.ModificarDataSesiones())
         self.botonEditar_lista.grid(row=2, column=5, padx=10, pady=10,rowspan=2)
         
         self.botonDelete_lista = Button(self.miFrame_Volantes, text="Borrar", width=12,command=lambda:self.EliminarDataSession())
         self.botonDelete_lista.grid(row=3, column=5, padx=10, pady=10,rowspan=2)
 
-    #-----------------FUNCIONES-----------------------
-
-    def InsertarData(self):
-        if self.id_seleccion != -1:
-            listadata=self.BuscarporID(self.id_seleccion)
-            if listadata is None:
-                messagebox.showinfo("MedicalREC", "Paciente No encontrado")
-            else:
-                try:
-                    data=self.leerInfoInputBox()
-                    if self.Insertar(self.id_seleccion,data):
-                        messagebox.showinfo("MedicalREC", "Sesion Agregada")
-                    else:
-                        messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")    
-                except Exception as err:
-                    print("Error: {}".format(err))
-                    messagebox.showinfo("MedicalREC", "Error en los Datos Ingresados")
-                finally:
-                    UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDVolante(self.id_seleccion))
-        else:
-            messagebox.showinfo("MedicalREC", "No hay Paciente Seleccionado")          
+    #-----------------FUNCIONES PARA VOLANTES-----------------------
                 
     def EliminarDataVolante(self):
         data_old=DataSeleccionado(self.miFrame_Volantes,self.treeVolantes)
@@ -704,29 +682,6 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
         finally:
             UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDVolante(id_paciente))
 
-
-    def EliminarDataSession(self):
-        data_old=DataSeleccionado(self.miFrame_Volantes,self.treeSesiones)
-        id_paciente=int(data_old[0])
-        try:
-            if id_paciente!=-1:
-                opcion=messagebox.askyesno("Eliminar","Desea eliminar la session Selecionado?")
-                if opcion:
-                    self.EliminarSesion(id_paciente,data_old)
-                    self.borrarInputBox()
-                    messagebox.showinfo("MedicalREC", "Sesion Eliminado")
-        except Exception as err:
-            print("Error: {}".format(err))
-            messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
-        finally:
-            UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporID(id_paciente))
-
-    def leerInfoInputBox(self):
-        print(self.cal_add.get_date())
-        print(self.var.get())
-
-        return [self.cal_add.get_date(),self.var.get()]
-
     def borrarInputBox(self):
         try:
             self.datacuadroNombre.set("")
@@ -742,6 +697,7 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
             UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarTodosSesiones())
             self.id_seleccion_volante=-1
             self.id_seleccion_sesion=-1
+            self.id_seleccion_paciente=-1
             print("MedicalREC - Se borran todos los campos")
         except Exception as err:
             print("Error: {}".format(err))
@@ -792,15 +748,42 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
                 messagebox.showinfo("MedicalREC", "Paciente No Encontrado")
         except Exception as err:
             print("Error: {}".format(err))
-            messagebox.showinfo("MedicalREC", "Paciente No Encontrado")    
+            messagebox.showinfo("MedicalREC", "Paciente No Encontrado") 
+    
+    #-----------------FUNCIONES PARA SESIONES-----------------------
 
-    def Editar(self,root,data_old,id_paciente,data_new):
+    def EliminarDataSession(self):
+        data_old=DataSeleccionado(self.miFrame_Volantes,self.treeSesiones)
+        id_paciente=int(data_old[0])
+        try:
+            if id_paciente!=-1:
+                opcion=messagebox.askyesno("Eliminar","Desea eliminar la session Selecionado?")
+                if opcion:
+                    self.EliminarSesion(id_paciente,data_old)
+                    self.borrarInputBox()
+                    messagebox.showinfo("MedicalREC", "Sesion Eliminado")
+        except Exception as err:
+            print("Error: {}".format(err))
+            messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
+        finally:
+            UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporID(id_paciente))
+
+    def leerInfoInputBox(self):
+        print(self.cal_add.get_date())
+        print(self.var.get())
+
+        return [self.cal_add.get_date(),self.var.get()]
+
+    def seleccionar(self,value):
+        self.var_check.set(value)
+
+    def EditarSesion(self,root,data_old,id_paciente,data_new):
         
         lista=(data_new,self.var_check.get())
         try:
             print("Data New; {}".format(lista))
             # data_old=self.leerInfoInputBox()
-            if self.Modificar(id_paciente,data_old,lista):
+            if self.ModificarSesion(id_paciente,data_old,lista):
                 messagebox.showinfo("MedicalREC", "Sesion Modificada")
             else:
                 messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
@@ -809,20 +792,84 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
                 print("Error: {}".format(err))
                 messagebox.showinfo("MedicalREC", "Error en los Datos Ingresados")
         finally:
-                UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporID(id_paciente))
+                UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDSesion(self.id_seleccion_sesion))
                 CerrarEdicion(root)
     
-    def seleccionar(self,value):
-        self.var_check.set(value)
-
-    def ModificarDataUser(self):
+    def InsertarDataSesiones(self):
         try:
             # data_old=self.DataSeleccionado()
-            data_old=DataSeleccionado(self.treeSesiones)
+            id_paciente=self.id_seleccion_paciente
+            if id_paciente != -1:
+                edit = tk.Tk()
+                edit.title("MedicalREC - Ingresar Sesiones")
+                edit.configure(width="350", height="350")
+                edit.withdraw()
+                edit.update_idletasks() # Update "requested size" from geometry manager 
+
+                x = (edit.winfo_screenwidth() - edit.winfo_reqwidth())/2 
+                y = (edit.winfo_screenheight() - edit.winfo_reqheight())/2 
+                edit.geometry("+%d+%d" % (x, y)) 
+
+                # This seems to draw the window frame immediately, so only call deiconify() 
+                # after setting correct window position 
+                edit.deiconify() 
+                var_check=StringVar()
+                R1_b = Radiobutton(edit, text = "Pagado", variable = var_check, value = "YES",command=lambda:self.seleccionar("YES"))
+                R1_b.deselect()
+                R2_b = Radiobutton(edit, text = "No Pagado", variable = var_check, value = "NO",command=lambda:self.seleccionar("NO"))
+                R2_b.select()
+        
+                R1_b.grid(row=0,column=1,padx=10, pady=10,columnspan=2)
+                R2_b.grid(row=1,column=1,padx=10, pady=10,columnspan=2)
+
+                calendario=DateEntry(edit,dateformat=3,width=12, background='darkblue',
+                                    foreground='white', borderwidth=4,Calendar =2020)
+                calendario.grid(row=2,column=1,padx=10, pady=10,columnspan=2)
+
+                botonEditar = Button(edit, text="ACEPTAR ", width=12,command=lambda:self.InsertarSesion(edit,id_paciente,calendario.get_date()))
+                botonEditar.grid(row=3, column=2, padx=10, pady=10,columnspan=2)
+            else:
+                messagebox.showinfo("MedicalREC", "No se selecciono ningun Paciente")   
+        except Exception as err:
+                print("Error: {}".format(err))
+                messagebox.showinfo("MedicalREC", "Sesion del Listado No seleccionada")   
+
+    def InsertarSesion(self,root,id_paciente,data_new):
+        
+        lista=(data_new,self.var_check.get())
+        try:
+            print("Data New; {}".format(lista))
+            # data_old=self.leerInfoInputBox()
+            if self.InsertarSesiones(id_paciente,lista):
+                messagebox.showinfo("MedicalREC", "Sesion Insertada")
+            else:
+                messagebox.showinfo("MedicalREC", "No se Puedo Completar la Accion!!")
+                
+        except Exception as err:
+                print("Error: {}".format(err))
+                messagebox.showinfo("MedicalREC", "Error en los Datos Ingresados")
+        finally:
+                UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDSesion(self.id_seleccion_sesion))
+                CerrarEdicion(root)
+    
+    def ModificarDataSesiones(self):
+        try:
+            # data_old=self.DataSeleccionado()
+            data_old=DataSeleccionado(self.miFrame_Volantes,self.treeSesiones)
             id_paciente=int(data_old[0])
             edit = tk.Tk()
             edit.title("MedicalREC - Edit Sesiones")
             edit.configure(width="350", height="350")
+            edit.withdraw()
+            edit.update_idletasks() # Update "requested size" from geometry manager 
+
+            x = (edit.winfo_screenwidth() - edit.winfo_reqwidth())/2 
+            y = (edit.winfo_screenheight() - edit.winfo_reqheight())/2 
+            edit.geometry("+%d+%d" % (x, y)) 
+
+            # This seems to draw the window frame immediately, so only call deiconify() 
+            # after setting correct window position 
+            edit.deiconify() 
             var_check=StringVar()
             R1_b = Radiobutton(edit, text = "Pagado", variable = var_check, value = "YES",command=lambda:self.seleccionar("YES"))
             R1_b.deselect()
@@ -836,7 +883,7 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
                                 foreground='white', borderwidth=4,Calendar =2020)
             calendario.grid(row=2,column=1,padx=10, pady=10,columnspan=2)
 
-            botonEditar = Button(edit, text="ACEPTAR ", width=12,command=lambda:self.Editar(edit,data_old,id_paciente,calendario.get_date()))
+            botonEditar = Button(edit, text="ACEPTAR ", width=12,command=lambda:self.EditarSesion(edit,data_old,id_paciente,calendario.get_date()))
             botonEditar.grid(row=3, column=2, padx=10, pady=10,columnspan=2)
         
         except Exception as err:
@@ -849,8 +896,9 @@ class Application(ttk.Frame):
     def __init__(self, main_window):
         super().__init__(main_window)
         main_window.title("MedicalREC - Gestion de Base de Datos Pacientes")
-        main_window.configure(background="#00CD63")
-        main_window.geometry("1024x900")
+        # main_window.configure(background="#00CD63")
+        main_window.configure(background="gray")
+        # main_window.geometry("1980x800")
         
         self.notebook = ttk.Notebook(self)
         ttk.Style().configure("TNotebook", background="gray")

@@ -5,9 +5,9 @@ from datetime import date
 #Sesiones
 class Sesiones(Conexion):
 
-    def Insertar(self,id_paciente,data):
+    def InsertarSesiones(self,id_paciente,data):
         resultado=True
-        print("------------Insertar-----------")
+        print("------------Insertar Sesion-----------")
         lista=[id_paciente,data[0],data[1]]
         try:    
             cnx=self.Conectar()
@@ -26,7 +26,8 @@ class Sesiones(Conexion):
                 self.CerrarConexion(cnx)
                 return resultado
 
-    def Modificar(self,id_paciente,data_old,data_new):
+    def ModificarSesion(self,id_paciente,data_old,data_new):
+        print("------------Modificar Sesion-----------")
         resultado=True
         lista=(data_new[0],data_new[1],id_paciente,data_old[1],data_old[2])
         print("Modificar: {}".format(lista))
@@ -34,7 +35,6 @@ class Sesiones(Conexion):
             cnx=self.Conectar()
             cursor = cnx.cursor()
             sql_qry="""UPDATE clinica.sesiones SET fecha=%s,pagado=%s WHERE id_p = %s and fecha=%s and pagado=%s"""
-            
             cursor.execute(sql_qry,lista)
             cnx.commit()
             print("Record Update successfully into clinica.sesiones table")
@@ -47,7 +47,7 @@ class Sesiones(Conexion):
                 self.CerrarConexion(cnx)
                 return resultado
 
-    def EliminarTodas(self,id_paciente):
+    def EliminarTodasSesiones(self,id_paciente):
         try:    
             cnx=self.Conectar()
             cursor = cnx.cursor()
@@ -143,7 +143,7 @@ class Sesiones(Conexion):
                 self.CerrarConexion(cnx)
                 return sesiones,personasPorDni
 
-    def BuscarporFecha(self,fecha):
+    def BuscarporFechaSesion(self,fecha):
         """La funcion retorna una tupla con los datos de 
         pacientes segun dni, sino retorna una tupla vacia"""
         print("------------BuscarporFecha-----------")
