@@ -18,6 +18,8 @@ from datetime import date
 #-----------------FUNCIONES COMUNES A TODOS LOS FRAMES-----------------------------------
 #########################################################################################
 
+global validacionLogin
+
 def CerrarEdicion(root):
     root.destroy()
 
@@ -1058,11 +1060,78 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
                 print("Error: {}".format(err))
                 messagebox.showinfo("MedicalREC", "Sesion del Listado No seleccionada")
 
+class LoginApp(ttk.Frame):
+    
+    def __init__(self, main_window):
+        super().__init__(main_window)
+        
+        self.userPasswords = {
+            'admin':'admin',
+            'root':'root',
+        }
+        self.pestas_color="#0e0349"
+        main_window.title("Login MedicalREC")
+        main_window.configure(background=self.pestas_color)
+
+        main_window.configure(width="350", height="350")
+        main_window.withdraw()
+        main_window.update_idletasks() # Update "requested size" from geometry manager 
+
+        x = (main_window.winfo_screenwidth() - main_window.winfo_reqwidth())/2 
+        y = (main_window.winfo_screenheight() - main_window.winfo_reqheight())/2 
+        main_window.geometry("+%d+%d" % (x, y)) 
+
+        # This seems to draw the window frame immediately, so only call deiconify() 
+        # after setting correct window position 
+        main_window.deiconify() 
+        # self.pestas_color="DarkGrey"
+        self.nombre_usuario = StringVar() 
+        self.clave = StringVar() 
+        
+        self.opcion=Label(main_window,text="Login MedicalREC", bg="LightGreen", font=("Calibri", 20))#ETIQUETA CON TEXTO
+        self.opcion.grid(row=0, column=0, padx=10, pady=10,sticky="we",rowspan=2,columnspan=2)
+        
+        self.logo=PhotoImage(file="logo.gif")
+        self.fondo=Label(main_window,image=self.logo)
+        self.fondo.grid(row=0, column=2, padx=10, pady=10,rowspan=2)
+
+        self.entrada_nombre = Entry(main_window,textvariable=self.nombre_usuario,width=25) #ESPACIO PARA INTRODUCIR EL NOMBRE.
+        self.entrada_nombre.insert(0,"Usuario")
+        self.entrada_nombre.grid(row=2, column=0, padx=10, pady=10,sticky="we",columnspan=3)    
+        
+        self.entrada_clave = Entry(main_window,textvariable=self.clave, show='*',width=25) #ESPACIO PARA INTRODUCIR LA CONTRASEÑA.
+        self.entrada_clave.grid(row=3, column=0, padx=10, pady=10,sticky="we",columnspan=3)
+        self.entrada_clave.insert(0,"Password")
+        
+        self.button=Button(main_window, text="Acceder", width=10, height=1,command=lambda:self.ValidarAcceso(main_window,self.userPasswords,self.entrada_nombre.get(),self.entrada_clave.get()))
+        self.button.grid(row=4, column=0, padx=10, pady=10,sticky="we",columnspan=3)
+    
+    def ValidarAcceso(self,root,diccionario,user,password):
+        global validacionLogin
+
+        if user in diccionario:
+            if diccionario.get(user)==password:
+                print("User: {}".format(user))
+                print("Password: {}".format(password))
+                # messagebox.showinfo("MedicalREC", "Acceso OK")
+                # print("Acceso OK")
+                validacionLogin=True
+                CerrarEdicion(root)
+            else:
+                messagebox.showinfo("MedicalREC", "Password Incorrecta")
+                validacionLogin=False
+                # print("Pssword Incorrecta")
+        else:
+            messagebox.showinfo("MedicalREC", "Usuario no existente")
+            # print("Usuario no existente")
+            validacionLogin=False
+        
 
 class Application(ttk.Frame):
     
     def __init__(self, main_window):
         super().__init__(main_window)
+        
         main_window.title("MedicalREC - Gestion de Base de Datos Pacientes")
         # main_window.configure(background="#00CD63")
         main_window.configure(background="gray")
@@ -1081,6 +1150,13 @@ class Application(ttk.Frame):
         self.notebook.pack(padx=10, pady=10)
         self.pack()
 
-main_window = tk.Tk()
-app = Application(main_window)
-app.mainloop()
+if __name__ == "__main__": 
+    global validacionLogin
+    validacionLogin=False
+    main_log = tk.Tk()
+    app = LoginApp(main_log)
+    app.mainloop()
+    if validacionLogin:    
+        main_window = tk.Tk()
+        app = Application(main_window)
+        app.mainloop()
