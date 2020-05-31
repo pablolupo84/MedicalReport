@@ -928,6 +928,7 @@ class VolanteFrame(ttk.Frame,Volantes,Sesiones):
         finally:
             if self.id_seleccion_paciente!=-1:
                 UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarporIDSesion(self.id_seleccion_paciente))
+                UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarporIDVolante(self.id_seleccion_volante))
             else:
                 UpdateTreeView(self.miFrame_Volantes,self.treeSesiones,self.BuscarTodosSesiones())
                 UpdateTreeView(self.miFrame_Volantes,self.treeVolantes,self.BuscarTodosVolantes())

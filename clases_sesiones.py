@@ -16,6 +16,12 @@ class Sesiones(Conexion):
             print("Dta a insertar ens esion {}".format(lista))
             cursor.execute(sql_qry,lista)
             cnx.commit()
+
+            #actualizar totalizador de tabla volantes
+            sql_qry="""UPDATE clinica.volante SET total=total+1 where id_paciente=%s"""
+            cursor.execute(sql_qry,(id_paciente,))
+            cnx.commit()
+
             print("Record inserted successfully into clinica.sesiones table")
         except Exception as err:
             print("Error: {}".format(err))
@@ -72,6 +78,12 @@ class Sesiones(Conexion):
             cursor.execute(sql_qry,data_delete)
             cnx.commit()
             print("Record Deleted successfully into clinica.sesiones table")
+
+            #actualizar totalizador de tabla volantes
+            sql_qry="""UPDATE clinica.volante SET total=total-1 where id_paciente=%s"""
+            cursor.execute(sql_qry,(id_paciente,))
+            cnx.commit()
+
         except Exception as err:
             print("Error: {}".format(err))
             print("Failed to Deleted data into clinica.sesiones table")

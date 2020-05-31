@@ -94,19 +94,7 @@ CREATE TABLE IF NOT EXISTS `sesiones` (
   `pagado` varchar(5) NOT NULL DEFAULT "NO"
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Disparadores `sesiones`
---
 
-DELIMITER $$
-
-CREATE TRIGGER `volante` AFTER INSERT ON `sesiones`
-FOR EACH ROW BEGIN
-	UPDATE volante 
-		set total = total + 1 
-	WHERE (id_paciente = new.id_p);
-END$$
-DELIMITER ;
 --
 -- Volcado de datos para la tabla `sesiones`
 --
@@ -143,8 +131,39 @@ INSERT INTO `volante` (`id_paciente`, `tipo`, `volante`, `patologia`, `tratamien
 (5, 'Particular', 20, 'Esguince tobillo', 'Masaje y corrientes galvánicas', 0),
 (7, 'DKV', 10, 'Dolor cervical', 'Masaje', 0);
 
+
+--
+-- Disparadores `sesiones` insert
+--
+
+-- DELIMITER $$
+-- CREATE TRIGGER `volante` AFTER INSERT ON `sesiones`
+-- FOR EACH ROW BEGIN
+-- 	UPDATE volante 
+-- 		set total = total + 1 
+-- 	WHERE (id_paciente = new.id_p);
+-- END$$
+-- DELIMITER ;
+
+--
+-- Disparadores `sesiones` delete
+--
+
+-- DELIMITER $$
+-- CREATE TRIGGER `volante` AFTER DELETE ON `sesiones`
+-- FOR EACH ROW BEGIN
+-- 	UPDATE volante 
+-- 		set total = total -1 
+-- 	WHERE (id_paciente = new.id_p);
+-- END$$
+-- DELIMITER ;
+
+
 --
 -- Índices para tablas volcadas
+--
+--
+-- Disparadores `sesiones delete`
 --
 
 --
