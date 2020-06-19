@@ -257,7 +257,7 @@ class PacienteFrame(ttk.Frame,Pacientes,Antecedentes):
                 resultado=False
                 messagebox.showinfo("MedicalREC", "CAMPO-APELLIDO")
             dni=self.datacuadroDni.get()
-            if(len(apellido)>9 or len(apellido)==0):
+            if(len(dni)>9 or len(dni)==0):
                 resultado=False
                 messagebox.showinfo("MedicalREC", "CAMPO-DNI")
             telefono=self.datacuadroTelefono.get()
